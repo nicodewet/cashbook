@@ -8,37 +8,32 @@ interface SetCompanyDetails {
     /**
      * Set the company details.
      *
-     * This method can be called multiple times to change the company configuration
-     * over time.
+     * It is assumed the company details have been separately obtained from the NZBN V3 REST API (design version 1.11).
+     * The relevant method being a GET request to /entities/{nzbn/
+     *
+     * This method can be called multiple times to change the company configuration over time.
      */
     fun setDetails(company: Company): Company
 
 }
 
+/**
+ * Apply business rules to SetCompanyDetails operation(s)
+ */
 class SetCompanyDetailsUseCase(private val setCompanyDetails: SetCompanyDetails) {
 
     fun setCompanyDetails(company: Company): Company {
 
-        if (company.companyName.isEmpty()) {
+        if (company.entityName.isEmpty()) {
             throw IllegalArgumentException("Company name cannot be empty")
         }
 
-        if (company.companyNumber.isEmpty()) {
-            throw IllegalArgumentException("Company number cannot be empty")
-        }
-
-        if (company.newZealandBusinessNumber.isEmpty()) {
+        if (company.NZBN.isEmpty()) {
             throw IllegalArgumentException("NZBN cannot be empty")
         }
 
         if (company.incorporationDate.isAfter(YearMonth.now())) {
             throw IllegalArgumentException("Company incorporation date cannot be in the future")
-        }
-
-        // Note that because gstNumber doubles as a company's IRD number, the converse of the below business
-        // rule does not hold (gstRegistrationDate can be null while the company has a gstNumber)
-        if (company.gstRegistrationDate != null && company.gstNumber == null) {
-            throw IllegalArgumentException("GST number must be provided when GST registration date is provided")
         }
 
         return setCompanyDetails.setDetails(company)
