@@ -1,5 +1,6 @@
 package com.thorgil.cashbook.core.entity
 
+import java.time.LocalDateTime
 import java.time.Month
 import java.time.YearMonth
 
@@ -19,6 +20,7 @@ import java.time.YearMonth
  * @param entityName the entityName in the /entities/{nzbn/ GET response (it is assumed
  *                   entityTypeCode indicates a NZCompany)
  * @param tradingName the name field of the latest tradingNames entry in the /entities/{nzbn/ GET response
+ * @param companyNumber
  * @param NZBN New Zealand Business Number as required in the /entities/{nzbn/ GET request
  * @param incorporationDate
  * @param companyStatus
@@ -26,14 +28,29 @@ import java.time.YearMonth
  * @param gstStatus gstStatus in the /entities/{nzbn/ GET response
  * @param gstEffectiveDate gstEffectiveDate in the /entities/{nzbn/ GET response
  * @param irdNumber also serves as the GST number if gstStatus indicates registered for GST
+ * @param lastUpdate the last time the company details were either created or updated thereafter
  */
-data class Company(val entityName: String,
-                   val tradingName: String?,
-                   val NZBN: String,
-                   val incorporationDate: YearMonth,
-                   val companyStatus: String,
-                   val annualReturnFilingMonth: Month,
-                   val gstStatus: String?,
-                   val gstEffectiveDate: String?,
-                   val irdNumber: String?)
+class Company (val entityName: String,
+               val tradingName: String?,
+               val companyNumber: String,
+               val NZBN: String,
+               val incorporationDate: YearMonth,
+               val companyStatus: CompanyStatus,
+               val annualReturnFilingMonth: Month,
+               val gstStatus: String?,
+               val gstEffectiveDate: String?,
+               val irdNumber: String?,
+               val lastUpdate: LocalDateTime?) {
 
+    fun gstNumber(): String? {
+        return this.irdNumber
+    }
+
+    fun companiesOfficeRecordLink(): String {
+        return "http://app.companiesoffice.govt.nz/co/$companyNumber"
+    }
+}
+
+enum class CompanyStatus {
+    REGISTERED
+}
