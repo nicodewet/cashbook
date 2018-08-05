@@ -13,7 +13,7 @@ import java.time.Month
 class GetCompanyFromConfigurationTest {
 
     @Test
-    fun `when configuration is correct we get a company`() {
+    fun `when configuration is correctly formatted we get a Company`() {
 
         // Arrange
         val companyConfiguration: GetCompanyFromConfiguration.CompanyConfiguration =
