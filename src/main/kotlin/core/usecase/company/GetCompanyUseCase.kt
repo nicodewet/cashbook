@@ -20,11 +20,6 @@ class GetCompanyUseCase(val getCompanyFromConfiguration: GetCompanyFromConfigura
                 .appendPattern("dd-MM-yyyy")
                 .toFormatter(Locale.ENGLISH)
 
-        val monthFormatter = DateTimeFormatterBuilder()
-                .appendPattern("MM")
-                .toFormatter(Locale.ENGLISH)
-
-
         val configuredEntityName: String = companyConfig.entityName
         if (configuredEntityName.isEmpty()) {
             throw IllegalArgumentException("entity name cannot be empty")
@@ -46,7 +41,7 @@ class GetCompanyUseCase(val getCompanyFromConfiguration: GetCompanyFromConfigura
         val incorporationDate: LocalDate = LocalDate.parse(configuredIncorporationDate, dayMonthYearFormatter)
 
         val configuredAnnualReturnFilingMonth: String = companyConfig.annualReturnFilingMonth
-        val annualReturnFilingMonth: Month = LocalDate.parse(configuredAnnualReturnFilingMonth, monthFormatter).month
+        val annualReturnFilingMonth: Month = Month.valueOf(configuredAnnualReturnFilingMonth)
 
         val configuredGstStatus: String = companyConfig.gstStatus
         val gstStatus: GstStatus = GstStatus.valueOf(configuredGstStatus)
