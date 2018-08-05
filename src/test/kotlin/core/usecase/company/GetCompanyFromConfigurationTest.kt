@@ -16,8 +16,8 @@ class GetCompanyFromConfigurationTest {
     fun `when configuration is correctly formatted we get a Company`() {
 
         // Arrange
-        val companyConfiguration: GetCompanyFromConfiguration.CompanyConfiguration =
-                GetCompanyFromConfiguration.CompanyConfiguration("Thorgil Limited",
+        val companyConfiguration: GetCompany.CompanyConfiguration =
+                GetCompany.CompanyConfiguration("Thorgil Limited",
                                                                 "Thorgil Software",
                                                                 "6833053",
                                                                 "9429046765208",
@@ -27,15 +27,9 @@ class GetCompanyFromConfigurationTest {
                                                     "07-05-2018",
                                                         "125-814-972")
 
-        val companyConfigStub:GetCompanyFromConfiguration = object: GetCompanyFromConfiguration {
-            override fun getCompanyConfiguration(): GetCompanyFromConfiguration.CompanyConfiguration {
-                return companyConfiguration
-            }
-        }
-
         // Act
-        val SUT: GetCompanyUseCase = GetCompanyUseCase(companyConfigStub)
-        val company: Company = SUT.getCompanyDetails()
+        val SUT: GetCompanyUseCase = GetCompanyUseCase(companyConfiguration)
+        val company: Company = SUT.getCompany()
 
         // Assert
         assertThat(company.entityName).isEqualTo("Thorgil Limited")

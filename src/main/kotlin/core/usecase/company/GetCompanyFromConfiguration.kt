@@ -1,6 +1,8 @@
 package com.thorgil.cashbook.core.usecase.company
 
-interface GetCompanyFromConfiguration {
+import com.thorgil.cashbook.core.entity.Company
+
+interface GetCompany {
 
     data class CompanyConfiguration(val entityName: String,
                                     val tradingName: String,
@@ -17,5 +19,5 @@ interface GetCompanyFromConfiguration {
      *
      * @return
      */
-    fun getCompanyConfiguration(): CompanyConfiguration
+    fun getCompany(): Company
 }

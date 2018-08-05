@@ -2,18 +2,16 @@ package com.thorgil.cashbook.core.usecase.company.entity
 
 import com.thorgil.cashbook.core.entity.Company
 import com.thorgil.cashbook.core.entity.GstStatus
-import com.thorgil.cashbook.core.usecase.company.GetCompanyFromConfiguration
+import com.thorgil.cashbook.core.usecase.company.GetCompany
 import java.time.LocalDate
 import java.time.Month
 import java.time.format.DateTimeFormatterBuilder
 import java.util.*
 
 
-class GetCompanyUseCase(val getCompanyFromConfiguration: GetCompanyFromConfiguration) {
+class GetCompanyUseCase(private val companyConfig: GetCompany.CompanyConfiguration): GetCompany {
 
-    fun getCompanyDetails(): Company {
-
-        val companyConfig: GetCompanyFromConfiguration.CompanyConfiguration = getCompanyFromConfiguration.getCompanyConfiguration()
+    override fun getCompany(): Company {
 
         val dayMonthYearFormatter = DateTimeFormatterBuilder()
                 .parseCaseInsensitive()
