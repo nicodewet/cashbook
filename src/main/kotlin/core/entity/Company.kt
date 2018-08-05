@@ -1,8 +1,7 @@
 package com.thorgil.cashbook.core.entity
 
-import java.time.LocalDateTime
+import java.time.LocalDate
 import java.time.Month
-import java.time.YearMonth
 
 /**
  * System-wide configuration representing a copy of data stored at authoritative
@@ -25,8 +24,8 @@ import java.time.YearMonth
  * @param incorporationDate
  * @param companyStatus
  * @param annualReturnFilingMonth company.annualReturnFilingMonth in the /entities/{nzbn/ GET response
- * @param gstStatus gstStatus in the /entities/{nzbn/ GET response
- * @param gstEffectiveDate gstEffectiveDate in the /entities/{nzbn/ GET response
+ * @param gstStatus gstStatus in the /entities/{nzbn/ GET response [private unless authorised as public]
+ * @param gstEffectiveDate gstEffectiveDate in the /entities/{nzbn/ GET response [private unless authorised as public]
  * @param irdNumber also serves as the GST number if gstStatus indicates registered for GST
  * @param lastUpdate the last time the company details were either created or updated thereafter
  */
@@ -34,13 +33,13 @@ class Company (val entityName: String,
                val tradingName: String?,
                val companyNumber: String,
                val NZBN: String,
-               val incorporationDate: YearMonth,
-               val companyStatus: CompanyStatus,
+               val incorporationDate: LocalDate,
                val annualReturnFilingMonth: Month,
-               val gstStatus: String?,
-               val gstEffectiveDate: String?,
-               val irdNumber: String?,
-               val lastUpdate: LocalDateTime?) {
+               val gstStatus: GstStatus,
+               val gstEffectiveDate: LocalDate?,
+               val irdNumber: String?) {
+
+    val companyStatus = CompanyStatus.REGISTERED
 
     fun gstNumber(): String? {
         return this.irdNumber
@@ -53,4 +52,9 @@ class Company (val entityName: String,
 
 enum class CompanyStatus {
     REGISTERED
+}
+
+enum class GstStatus {
+    REGISTERED,
+    NOT_REGISTERED
 }
