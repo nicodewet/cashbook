@@ -26,7 +26,7 @@ class CompanyHttpApiTests(@Autowired val mockMvc: MockMvc) {
     private lateinit var company: GetCompany
 
     @Test
-    fun `List articles`() {
+    fun `get company`() {
         val now = LocalDate.now()
         val theCompany = Company("ACME Limited",
                 "ACME Breads",
@@ -43,8 +43,10 @@ class CompanyHttpApiTests(@Autowired val mockMvc: MockMvc) {
                 .andExpect(MockMvcResultMatchers.status().isOk)
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.jsonPath("\$.entityName").value(theCompany.entityName))
-
-
+                .andExpect(MockMvcResultMatchers.jsonPath("\$.companyNumber").value(theCompany.companyNumber))
+                .andExpect(MockMvcResultMatchers.jsonPath("\$.nzbn").value(theCompany.NZBN))
+                .andExpect(MockMvcResultMatchers.jsonPath("\$.annualReturnFilingMonth").value(theCompany.annualReturnFilingMonth.toString()))
+                .andExpect(MockMvcResultMatchers.jsonPath("\$.gstStatus").value(theCompany.gstStatus.toString()))
     }
 
 }
