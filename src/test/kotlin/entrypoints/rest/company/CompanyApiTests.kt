@@ -16,6 +16,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import java.time.LocalDate
 import java.time.Month
+import java.time.format.DateTimeFormatter
+
+
 
 @ExtendWith(SpringExtension::class)
 @WebMvcTest
@@ -27,26 +30,41 @@ class CompanyHttpApiTests(@Autowired val mockMvc: MockMvc) {
 
     @Test
     fun `get company`() {
+
+        // Arrange
         val now = LocalDate.now()
+        val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+        val formattedNowDate = now.format(formatter)
+
+        val tradingName = "ACME Breads"
+        val irdNumber = "111-111-111"
         val theCompany = Company("ACME Limited",
-                "ACME Breads",
+                tradingName,
                 "123",
                 "123",
                 now,
                 Month.JUNE,
                 GstStatus.REGISTERED,
-                now, "111-111-111")
+                now, irdNumber)
 
         whenever(company.getCompany()).thenReturn(theCompany)
 
+        // Act and Assert
         mockMvc.perform(MockMvcRequestBuilders.get("/api/company").accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk)
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.jsonPath("\$.entityName").value(theCompany.entityName))
+                .andExpect(MockMvcResultMatchers.jsonPath("\$.tradingName").value(tradingName))
                 .andExpect(MockMvcResultMatchers.jsonPath("\$.companyNumber").value(theCompany.companyNumber))
                 .andExpect(MockMvcResultMatchers.jsonPath("\$.nzbn").value(theCompany.NZBN))
+                .andExpect(MockMvcResultMatchers.jsonPath("\$.incorporationDate").value(formattedNowDate))
                 .andExpect(MockMvcResultMatchers.jsonPath("\$.annualReturnFilingMonth").value(theCompany.annualReturnFilingMonth.toString()))
                 .andExpect(MockMvcResultMatchers.jsonPath("\$.gstStatus").value(theCompany.gstStatus.toString()))
+                .andExpect(MockMvcResultMatchers.jsonPath("\$.gstEffectiveDate").value(formattedNowDate))
+                .andExpect(MockMvcResultMatchers.jsonPath("\$.irdNumber").value(irdNumber))
+                .andExpect(MockMvcResultMatchers.jsonPath("\$.companyStatus").value(theCompany.companyStatus.toString()))
+                .andExpect(MockMvcResultMatchers.jsonPath("\$.gstNumber").value(irdNumber))
+                .andExpect(MockMvcResultMatchers.jsonPath("\$.companiesOfficeRecordLink").value(Company.companiesOfficeBaseUrl + theCompany.companyNumber))
     }
 
 }

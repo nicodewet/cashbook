@@ -39,6 +39,14 @@ class Company (val entityName: String,
                val gstEffectiveDate: LocalDate?,
                val irdNumber: String?) {
 
+    companion object {
+        lateinit var companiesOfficeBaseUrl: String
+    }
+
+    init {
+        companiesOfficeBaseUrl = "http://app.companiesoffice.govt.nz/co/"
+    }
+
     val companyStatus = CompanyStatus.REGISTERED
 
     fun gstNumber(): String? {
@@ -46,7 +54,7 @@ class Company (val entityName: String,
     }
 
     fun companiesOfficeRecordLink(): String {
-        return "http://app.companiesoffice.govt.nz/co/$companyNumber"
+        return "$companiesOfficeBaseUrl$companyNumber"
     }
 }
 
