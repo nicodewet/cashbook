@@ -22,25 +22,24 @@ import java.time.Month
  * @param companyNumber
  * @param NZBN New Zealand Business Number as required in the /entities/{nzbn/ GET request
  * @param incorporationDate
- * @param companyStatus
  * @param annualReturnFilingMonth company.annualReturnFilingMonth in the /entities/{nzbn/ GET response
  * @param gstStatus gstStatus in the /entities/{nzbn/ GET response [private unless authorised as public]
  * @param gstEffectiveDate gstEffectiveDate in the /entities/{nzbn/ GET response [private unless authorised as public]
  * @param irdNumber also serves as the GST number if gstStatus indicates registered for GST
- * @param lastUpdate the last time the company details were either created or updated thereafter
  */
 class Company (val entityName: String,
-               val tradingName: String?,
+               val tradingName: String? = null,
                val companyNumber: String,
                val NZBN: String,
                val incorporationDate: LocalDate,
                val annualReturnFilingMonth: Month,
                val gstStatus: GstStatus,
-               val gstEffectiveDate: LocalDate?,
-               val irdNumber: String?) {
+               val gstEffectiveDate: LocalDate? = null,
+               val irdNumber: String? = null) {
 
     companion object {
         lateinit var companiesOfficeBaseUrl: String
+        val GST_PERCENTAGE = 0.15
     }
 
     init {
