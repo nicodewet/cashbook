@@ -1,26 +1,25 @@
 package com.thorgil.cashbook.core.usecase.company.business.transaction
 
-import com.thorgil.cashbook.core.entity.BusinessTransaction
-import com.thorgil.cashbook.core.entity.BusinessTransactionType
-import com.thorgil.cashbook.core.entity.Company
-import com.thorgil.cashbook.core.entity.GstStatus
+import com.thorgil.cashbook.core.entity.*
 import com.thorgil.cashbook.core.usecase.business.transaction.AddBusinessTransactionDTO
 import com.thorgil.cashbook.core.usecase.business.transaction.AddBusinessTransactionInRepository
 import com.thorgil.cashbook.core.usecase.business.transaction.AddBusinessTransactionUseCase
 import com.thorgil.cashbook.core.usecase.company.GetCompany
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import org.slf4j.LoggerFactory
 import java.time.LocalDate
 import java.time.Month
 
 class AddBusinessTransactionUseCaseTest {
 
-    @Test
-    fun `owner contribution made today is acceptable`() {
+    companion object {
 
-        // === Arrange ===
+        private val LOGGER = LoggerFactory.getLogger(AddBusinessTransactionUseCaseTest::class.java)
 
-        val companyProvider: GetCompany = object: GetCompany {
+        private  val companyProvider: GetCompany = object: GetCompany {
             override fun getCompany(): Company {
                 return Company(entityName = "ABC Limited",
                         companyNumber = "123",
@@ -29,15 +28,32 @@ class AddBusinessTransactionUseCaseTest {
                         annualReturnFilingMonth = Month.JUNE,
                         gstStatus = GstStatus.REGISTERED)
             }
-
         }
 
-        val addBusinessTransactionInRepo: AddBusinessTransactionInRepository = object: AddBusinessTransactionInRepository {
+        private val addBusinessTransactionInRepo: AddBusinessTransactionInRepository = object: AddBusinessTransactionInRepository {
             override fun addBusinessTransactionInRepository(businessTransaction: BusinessTransaction): Boolean {
                 return true
             }
 
         }
+
+        @BeforeAll
+        @JvmStatic
+        internal fun beforeAll() {
+            LOGGER.info("beforeAll called")
+        }
+
+        @AfterAll
+        @JvmStatic
+        internal fun afterAll() {
+            LOGGER.info("afterAll called")
+        }
+    }
+
+    @Test
+    fun `owner contribution made today is acceptable and has no associated GST`() {
+
+        // === Arrange ===
 
         val addBusinessTransaction = AddBusinessTransactionDTO(
                 type = BusinessTransactionType.OWNER_CONTRIBUTION_PAYMENT,
@@ -62,10 +78,96 @@ class AddBusinessTransactionUseCaseTest {
         assertThat(businessTransaction.createdTimestamp).isNotNull()
         assertThat(businessTransaction.evidenceLink).isNull()
         assertThat(businessTransaction.gstInCents).isNotNull()
+        assertThat(businessTransaction.gstInCents).isEqualTo(0)
         assertThat(businessTransaction.scheduledDate).isNull()
         assertThat(businessTransaction.type).isEqualTo(BusinessTransactionType.OWNER_CONTRIBUTION_PAYMENT)
         assertThat(businessTransaction.uuid).isNotBlank()
         assertThat(businessTransaction.lastUpdateTimestamp).isNotNull()
+    }
+
+    @Test
+    fun `invoice transaction has the appropriate associated GST`() {
+
+        // === Arrange ===
+
+        val addBusinessTransaction = AddBusinessTransactionDTO(
+                type = BusinessTransactionType.INVOICE_PAYMENT,
+                completedDate = LocalDate.now(),
+                amountInCents = 2000,
+                gstInCents = 300
+        )
+
+        val sut = AddBusinessTransactionUseCase(companyProvider, addBusinessTransactionInRepo)
+
+        // === Act ===
+
+        val businessTransaction: BusinessTransaction = sut.addBusinessTransaction(addBusinessTransaction)
+
+        // === Assert ===
+
+        assertThat(businessTransaction.businessTransactionIssue).isEqualTo(null)
+        assertThat(businessTransaction.businessTransactionIssueDetail).isEqualTo(null)
+        assertThat(businessTransaction.gstInCents).isEqualTo(300)
+    }
+
+    @Test
+    fun `invoice transaction with incorrect associated GST has an issue`() {
+
+        // === Arrange ===
+
+        val addBusinessTransWithIncorrectGST = AddBusinessTransactionDTO(
+                type = BusinessTransactionType.INVOICE_PAYMENT,
+                completedDate = LocalDate.now(),
+                amountInCents = 2000,
+                gstInCents = 3
+        )
+
+        val sut = AddBusinessTransactionUseCase(companyProvider, addBusinessTransactionInRepo)
+
+        // === Act ===
+
+        val businessTransaction: BusinessTransaction = sut.addBusinessTransaction(addBusinessTransWithIncorrectGST)
+
+        // === Assert ===
+
+        assertThat(businessTransaction.businessTransactionIssue).isEqualTo(BusinessTransactionIssue.INVOICE_PAYMENT_WITH_INCORRECT_GST)
+        assertThat(businessTransaction.businessTransactionIssueDetail).isNotBlank()
+        assertThat(businessTransaction.gstInCents).isEqualTo(3)
+    }
+
+    @Test
+    fun `completed transaction cannot also have a scheduled date`() {
+        // === Arrange ===
+        // === Act ===
+        // === Assert ===
+    }
+
+    @Test
+    fun `amount field must be a positive value`() {
+        // === Arrange ===
+        // === Act ===
+        // === Assert ===
+    }
+
+    @Test
+    fun `GST must be zero or more when supplied`() {
+        // === Arrange ===
+        // === Act ===
+        // === Assert ===
+    }
+
+    @Test
+    fun `cannot schedule a business transaction for a past date`() {
+        // === Arrange ===
+        // === Act ===
+        // === Assert ===
+    }
+
+    @Test
+    fun `can schedule a business transaction for a future date`() {
+        // === Arrange ===
+        // === Act ===
+        // === Assert ===
     }
 
 }

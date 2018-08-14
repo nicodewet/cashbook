@@ -47,7 +47,7 @@ class AddBusinessTransactionUseCase(private val companyProvider: GetCompany,
         }
 
         if (businessTransaction.gstInCents < 0) {
-            throw IllegalArgumentException("BusinessTransaction GST amount must be greater than 0 when supplied")
+            throw IllegalArgumentException("BusinessTransaction GST amount must be greater or equal to than 0 when supplied")
         }
 
         var businessTransactionIssue: BusinessTransactionIssue? = null
