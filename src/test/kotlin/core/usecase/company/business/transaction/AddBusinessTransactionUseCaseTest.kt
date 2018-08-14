@@ -59,7 +59,8 @@ class AddBusinessTransactionUseCaseTest {
         val addBusinessTransaction = AddBusinessTransactionDTO(
                 type = BusinessTransactionType.OWNER_CONTRIBUTION_PAYMENT,
                 completedDate = LocalDate.now(),
-                amountInCents = 2000
+                amountInCents = 2000,
+                gstInCents = 0
         )
 
         val sut = AddBusinessTransactionUseCase(companyProvider, addBusinessTransactionInRepo)
@@ -160,29 +161,83 @@ class AddBusinessTransactionUseCaseTest {
     @Test
     fun `amount field must be a positive value`() {
         // === Arrange ===
-        // === Act ===
-        // === Assert ===
+
+        val addBusinessTransaction = AddBusinessTransactionDTO(
+                type = BusinessTransactionType.OWNER_CONTRIBUTION_PAYMENT,
+                completedDate = LocalDate.now(),
+                amountInCents = -2
+        )
+
+        val sut = AddBusinessTransactionUseCase(companyProvider, addBusinessTransactionInRepo)
+
+        // === Act & Assert ===
+        Assertions.assertThrows(IllegalArgumentException::class.java) {
+            sut.addBusinessTransaction(addBusinessTransaction)
+        }
     }
 
     @Test
-    fun `GST must be zero or more when supplied`() {
+    fun `GST must be zero or more when supplied and is less than zero`() {
         // === Arrange ===
-        // === Act ===
-        // === Assert ===
+
+        val addBusinessTransaction = AddBusinessTransactionDTO(
+                type = BusinessTransactionType.OWNER_CONTRIBUTION_PAYMENT,
+                completedDate = LocalDate.now(),
+                amountInCents = 500,
+                gstInCents = -1
+        )
+
+        val sut = AddBusinessTransactionUseCase(companyProvider, addBusinessTransactionInRepo)
+
+        // === Act & Assert ===
+        Assertions.assertThrows(IllegalArgumentException::class.java) {
+            sut.addBusinessTransaction(addBusinessTransaction)
+        }
     }
 
     @Test
     fun `cannot schedule a business transaction for a past date`() {
         // === Arrange ===
-        // === Act ===
-        // === Assert ===
+
+        val yesterday = LocalDate.now().minusDays(1)
+        val addBusinessTransaction = AddBusinessTransactionDTO(
+                type = BusinessTransactionType.OWNER_CONTRIBUTION_PAYMENT,
+                completedDate = LocalDate.now(),
+                amountInCents = 500,
+                gstInCents = 575,
+                scheduledDate = yesterday
+        )
+
+        val sut = AddBusinessTransactionUseCase(companyProvider, addBusinessTransactionInRepo)
+
+        Assertions.assertThrows(IllegalArgumentException::class.java) {
+            sut.addBusinessTransaction(addBusinessTransaction)
+        }
     }
 
     @Test
     fun `can schedule a business transaction for a future date`() {
         // === Arrange ===
+
+        val thirtyDaysFromNow = LocalDate.now().plusDays(30)
+        val addBusinessTransaction = AddBusinessTransactionDTO(
+                type = BusinessTransactionType.OWNER_CONTRIBUTION_PAYMENT,
+                completedDate = null,
+                amountInCents = 500,
+                gstInCents = 575,
+                scheduledDate = thirtyDaysFromNow
+        )
+
+        val sut = AddBusinessTransactionUseCase(companyProvider, addBusinessTransactionInRepo)
+
         // === Act ===
+
+        val businessTransaction: BusinessTransaction = sut.addBusinessTransaction(addBusinessTransaction)
+
         // === Assert ===
+
+        assertThat(businessTransaction.businessTransactionIssue).isEqualTo(null)
+        assertThat(businessTransaction.businessTransactionIssueDetail).isEqualTo(null)
     }
 
 }
