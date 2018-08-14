@@ -7,6 +7,7 @@ import com.thorgil.cashbook.core.usecase.business.transaction.AddBusinessTransac
 import com.thorgil.cashbook.core.usecase.company.GetCompany
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.slf4j.LoggerFactory
@@ -138,8 +139,22 @@ class AddBusinessTransactionUseCaseTest {
     @Test
     fun `completed transaction cannot also have a scheduled date`() {
         // === Arrange ===
-        // === Act ===
-        // === Assert ===
+
+        val tomorrow = LocalDate.now().plusDays(1)
+        val addBusinessTransWithIncorrectSchedDate = AddBusinessTransactionDTO(
+                type = BusinessTransactionType.INVOICE_PAYMENT,
+                completedDate = LocalDate.now(),
+                scheduledDate = tomorrow,
+                amountInCents = 2000,
+                gstInCents = 300
+        )
+        val sut = AddBusinessTransactionUseCase(companyProvider, addBusinessTransactionInRepo)
+
+        // === Act & Assert ===
+        Assertions.assertThrows(IllegalArgumentException::class.java) {
+            sut.addBusinessTransaction(addBusinessTransWithIncorrectSchedDate)
+        }
+
     }
 
     @Test
