@@ -3,6 +3,7 @@ package com.thorgil.cashbook
 import com.thorgil.cashbook.core.entity.Company
 import com.thorgil.cashbook.core.usecase.company.GetCompany
 import com.thorgil.cashbook.core.usecase.company.entity.GetCompanyUseCase
+import com.thorgil.cashbook.dataproviders.BusinessTransactionDataProvider
 import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -44,6 +45,11 @@ class CashbookApplication {
 
         return getCompany
 
+    }
+
+    @Bean
+    fun businessTransactionDataProvider(): BusinessTransactionDataProvider {
+        return BusinessTransactionDataProvider()
     }
 }
 

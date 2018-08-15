@@ -32,8 +32,7 @@ class AddBusinessTransactionUseCaseTest {
         }
 
         private val addBusinessTransactionInRepo: AddBusinessTransactionInRepository = object: AddBusinessTransactionInRepository {
-            override fun addBusinessTransactionInRepository(businessTransaction: BusinessTransaction): Boolean {
-                return true
+            override fun addBusinessTransactionInRepository(businessTransaction: BusinessTransaction) {
             }
 
         }
