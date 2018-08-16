@@ -4,6 +4,7 @@ import com.thorgil.cashbook.core.entity.*
 import com.thorgil.cashbook.core.usecase.business.transaction.AddBusinessTransactionDTO
 import com.thorgil.cashbook.core.usecase.business.transaction.AddBusinessTransactionInRepository
 import com.thorgil.cashbook.core.usecase.business.transaction.AddBusinessTransactionUseCase
+import com.thorgil.cashbook.core.usecase.business.transaction.BusinessTransactionException
 import com.thorgil.cashbook.core.usecase.company.GetCompany
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
@@ -151,7 +152,7 @@ class AddBusinessTransactionUseCaseTest {
         val sut = AddBusinessTransactionUseCase(companyProvider, addBusinessTransactionInRepo)
 
         // === Act & Assert ===
-        Assertions.assertThrows(IllegalArgumentException::class.java) {
+        Assertions.assertThrows(BusinessTransactionException::class.java) {
             sut.addBusinessTransaction(addBusinessTransWithIncorrectSchedDate)
         }
 
@@ -170,7 +171,7 @@ class AddBusinessTransactionUseCaseTest {
         val sut = AddBusinessTransactionUseCase(companyProvider, addBusinessTransactionInRepo)
 
         // === Act & Assert ===
-        Assertions.assertThrows(IllegalArgumentException::class.java) {
+        Assertions.assertThrows(BusinessTransactionException::class.java) {
             sut.addBusinessTransaction(addBusinessTransaction)
         }
     }
@@ -189,7 +190,7 @@ class AddBusinessTransactionUseCaseTest {
         val sut = AddBusinessTransactionUseCase(companyProvider, addBusinessTransactionInRepo)
 
         // === Act & Assert ===
-        Assertions.assertThrows(IllegalArgumentException::class.java) {
+        Assertions.assertThrows(BusinessTransactionException::class.java) {
             sut.addBusinessTransaction(addBusinessTransaction)
         }
     }
@@ -209,7 +210,7 @@ class AddBusinessTransactionUseCaseTest {
 
         val sut = AddBusinessTransactionUseCase(companyProvider, addBusinessTransactionInRepo)
 
-        Assertions.assertThrows(IllegalArgumentException::class.java) {
+        Assertions.assertThrows(BusinessTransactionException::class.java) {
             sut.addBusinessTransaction(addBusinessTransaction)
         }
     }
