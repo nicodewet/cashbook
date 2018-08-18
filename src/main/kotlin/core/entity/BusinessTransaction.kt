@@ -82,13 +82,18 @@ enum class BusinessTransactionType {
     IRD_GST_PAYMENT {
         override fun parent() = EXPENSE
     },
+    BANK_WITHHOLDING_TAX {
+        override fun parent() = EXPENSE
+    },
     INVOICE_PAYMENT {
+        override fun parent() = INCOME
+    },
+    CREDIT_INTEREST_PAYMENT {
         override fun parent() = INCOME
     },
     OWNER_CONTRIBUTION_PAYMENT {
         override fun parent() = INCOME
     };
-
     abstract fun parent(): BusinessTransactionType?
 }
 
