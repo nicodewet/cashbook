@@ -34,11 +34,15 @@ class AddBusinessTransactionUseCase(private val companyProvider: GetCompany,
             throw BusinessTransactionException("A completed BusinessTransaction cannot also be scheduled")
         }
 
-        if (businessTransaction.scheduledDate == null && LocalDate.now().isBefore(businessTransaction.completedDate)) {
+        if (businessTransaction.scheduledDate == null &&
+                businessTransaction.completedDate != null &&
+                LocalDate.now().isBefore(businessTransaction.completedDate)) {
             throw BusinessTransactionException("A completed BusinessTransaction must have a date equal to or before today")
         }
 
-        if (businessTransaction.completedDate == null && LocalDate.now().isAfter(businessTransaction.scheduledDate)) {
+        if (businessTransaction.completedDate == null &&
+                businessTransaction.scheduledDate != null &&
+                LocalDate.now().isAfter(businessTransaction.scheduledDate)) {
             throw BusinessTransactionException("A scheduled BusinessTransaction must be scheduled for a future date")
         }
 

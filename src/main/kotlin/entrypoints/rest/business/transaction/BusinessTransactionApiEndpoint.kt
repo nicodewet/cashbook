@@ -22,6 +22,7 @@ class BusinessTransactionApiEndpoint(private val addBusinessTransactionUseCase: 
     @PostMapping
     fun putBusinessTransaction(@RequestBody businessTransaction: AddBusinessTransactionDTO): ResponseEntity<String> {
         try {
+            log.info("Message $businessTransaction")
             addBusinessTransactionUseCase.addBusinessTransaction(businessTransaction)
         } catch (e: BusinessTransactionException) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.message)
