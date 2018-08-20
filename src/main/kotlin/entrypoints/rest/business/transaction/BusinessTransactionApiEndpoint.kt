@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("/api/business/transaction")
@@ -21,7 +21,7 @@ class BusinessTransactionApiEndpoint(private val addBusinessTransactionUseCase: 
     private val log = LoggerFactory.getLogger(BusinessTransactionApiEndpoint::class.java)
 
     @PostMapping
-    fun putBusinessTransaction(@RequestBody businessTransactionPostBody: AddBusinessTransactionPostBody): ResponseEntity<String> {
+    fun putBusinessTransaction(@Valid @RequestBody businessTransactionPostBody: AddBusinessTransactionPostBody): ResponseEntity<String> {
 
         try {
             log.info("HTTP POST: $businessTransactionPostBody")
@@ -29,12 +29,8 @@ class BusinessTransactionApiEndpoint(private val addBusinessTransactionUseCase: 
             val addBusinessTransactionMessage = AddBusinessTransactionMessage(
                     type = businessTransactionPostBody.type,
                     parentTransactionUUID = businessTransactionPostBody.parentTransactionUUID,
-                    scheduledDate = if (businessTransactionPostBody.scheduledDate != null) {
-                        LocalDate.parse(businessTransactionPostBody.scheduledDate)
-                    } else { null },
-                    completedDate = if (businessTransactionPostBody.completedDate != null) {
-                        LocalDate.parse(businessTransactionPostBody.completedDate)
-                    } else { null },
+                    scheduledDate = businessTransactionPostBody.scheduledDate,
+                    completedDate = businessTransactionPostBody.completedDate,
                     amountInCents = businessTransactionPostBody.amountInCents,
                     gstInCents = businessTransactionPostBody.gstInCents,
                     evidenceLink = businessTransactionPostBody.evidenceLink

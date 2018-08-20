@@ -1,6 +1,8 @@
 package com.thorgil.cashbook.entrypoints.rest.company.business.transaction
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.nhaarman.mockito_kotlin.whenever
 import com.thorgil.cashbook.core.entity.BusinessTransactionType
 import com.thorgil.cashbook.core.entity.Company
@@ -19,6 +21,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import java.time.LocalDate
 import java.time.Month
+
+
 
 
 /**
@@ -52,9 +56,15 @@ class BusinessTransactionApiTests(@Autowired val mockMvc: MockMvc) {
 
         whenever(company.getCompany()).thenReturn(theCompany)
 
+        val mapper = ObjectMapper()
+        mapper.registerModule(JavaTimeModule())
+        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+
         val addBusinessTransactionPostBody = AddBusinessTransactionPostBody(type = BusinessTransactionType.INVOICE_PAYMENT,
-                completedDate = "2018-07-31", amountInCents = 23000)
-        val addBusinessTransactionJson: String = asJsonString(addBusinessTransactionPostBody)
+                completedDate = LocalDate.parse("2018-07-31"), amountInCents = 23000)
+
+        val addBusinessTransactionJson = mapper.writeValueAsString(addBusinessTransactionPostBody)
+
 
         System.out.println(addBusinessTransactionJson)
 
@@ -63,16 +73,6 @@ class BusinessTransactionApiTests(@Autowired val mockMvc: MockMvc) {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk)
-    }
-
-    fun asJsonString(obj: Any): String {
-        try {
-            val mapper = ObjectMapper()
-            return mapper.writeValueAsString(obj)
-        } catch (e: Exception) {
-            throw RuntimeException(e)
-        }
-
     }
 
 }
