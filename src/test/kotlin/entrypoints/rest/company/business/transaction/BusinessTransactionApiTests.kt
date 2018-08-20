@@ -53,7 +53,7 @@ class BusinessTransactionApiTests(@Autowired val mockMvc: MockMvc) {
         whenever(company.getCompany()).thenReturn(theCompany)
 
         val addBusinessTransactionPostBody = AddBusinessTransactionPostBody(type = BusinessTransactionType.INVOICE_PAYMENT,
-                completedDate = null, amountInCents = 23000)
+                completedDate = "2018-07-31", amountInCents = 23000)
         val addBusinessTransactionJson: String = asJsonString(addBusinessTransactionPostBody)
 
         System.out.println(addBusinessTransactionJson)
