@@ -37,24 +37,25 @@ class BusinessTransactionApiTests(@Autowired val mockMvc: MockMvc) {
     @MockBean
     private lateinit var company: GetCompany
 
+    companion object {
+        private  val companyProvider: GetCompany = object: GetCompany {
+            override fun getCompany(): Company {
+                return Company(entityName = "ABC Limited",
+                        companyNumber = "123",
+                        NZBN = "123",
+                        incorporationDate = LocalDate.now(),
+                        annualReturnFilingMonth = Month.JUNE,
+                        gstStatus = GstStatus.REGISTERED)
+            }
+        }
+    }
+
     @Test
     fun `post valid business transaction`() {
 
         // Arrange
 
-        val now = LocalDate.now()
-        val tradingName = "ACME Breads"
-        val irdNumber = "111-111-111"
-        val theCompany = Company("ACME Limited",
-                tradingName,
-                "123",
-                "123",
-                now,
-                Month.JUNE,
-                GstStatus.REGISTERED,
-                now, irdNumber)
-
-        whenever(company.getCompany()).thenReturn(theCompany)
+        whenever(company.getCompany()).thenReturn(companyProvider.getCompany())
 
         val mapper = ObjectMapper()
         mapper.registerModule(JavaTimeModule())
@@ -65,14 +66,59 @@ class BusinessTransactionApiTests(@Autowired val mockMvc: MockMvc) {
 
         val addBusinessTransactionJson = mapper.writeValueAsString(addBusinessTransactionPostBody)
 
-
-        System.out.println(addBusinessTransactionJson)
-
         // Act and Assert
         mockMvc.perform(MockMvcRequestBuilders.post("/api/business/transaction").content(addBusinessTransactionJson)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk)
+    }
+
+    @Test
+    fun `post invalid business transaction - completed date in future`() {
+
+        // Arrange
+
+        whenever(company.getCompany()).thenReturn(companyProvider.getCompany())
+
+        val mapper = ObjectMapper()
+        mapper.registerModule(JavaTimeModule())
+        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+
+        val addBusinessTransactionPostBody = AddBusinessTransactionPostBody(type = BusinessTransactionType.INVOICE_PAYMENT,
+                completedDate = LocalDate.now().plusDays(1), amountInCents = 23000)
+
+        val addBusinessTransactionJson = mapper.writeValueAsString(addBusinessTransactionPostBody)
+
+        // Act and Assert
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/business/transaction").content(addBusinessTransactionJson)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is4xxClientError)
+    }
+
+    @Test
+    fun `post invalid business transaction - scheduled date in past`() {
+
+        // Arrange
+
+        whenever(company.getCompany()).thenReturn(companyProvider.getCompany())
+
+        val mapper = ObjectMapper()
+        mapper.registerModule(JavaTimeModule())
+        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+
+        val addBusinessTransactionPostBody = AddBusinessTransactionPostBody(type = BusinessTransactionType.INVOICE_PAYMENT,
+                scheduledDate = LocalDate.now().minusDays(1), completedDate = null, amountInCents = 23000)
+
+        val addBusinessTransactionJson = mapper.writeValueAsString(addBusinessTransactionPostBody)
+
+        // Act and Assert
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/business/transaction").content(addBusinessTransactionJson)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is4xxClientError)
     }
 
 }

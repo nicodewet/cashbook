@@ -6,14 +6,14 @@ import javax.validation.constraints.FutureOrPresent
 import javax.validation.constraints.PastOrPresent
 
 /**
- * @param scheduledDate must be in ISO 8601 local date format e.g. 2018-07-31
- * @param completedDate must be in ISO 8601 local date format e.g. 2018-07-31
+ * @param scheduledDate should be serialized in format String of "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+ * @param completedDate should be serialized in format String of "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
  */
 data class AddBusinessTransactionPostBody(val type: BusinessTransactionType,
                                           val parentTransactionUUID: String? = null,
-                                          @get: FutureOrPresent
+                                          @get: FutureOrPresent (message = "{scheduled_date.future_or_present}")
                                           val scheduledDate: LocalDate? = null,
-                                          @get: PastOrPresent
+                                          @get: PastOrPresent (message = "{completed_date.past_or_present}")
                                           val completedDate: LocalDate?,
                                           val amountInCents: Int,
                                           val gstInCents: Int = 0,
