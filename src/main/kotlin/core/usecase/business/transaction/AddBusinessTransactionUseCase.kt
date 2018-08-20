@@ -15,14 +15,14 @@ interface AddParentBusinessTransaction {
      * @throws BusinessTransactionException indicates a business rule validation error
      * @return when adding a child transaction the parent transaction should be returned in the response
      */
-    fun addBusinessTransaction(businessTransaction: AddBusinessTransactionDTO): BusinessTransaction
+    fun addBusinessTransaction(businessTransaction: AddBusinessTransactionMessage): BusinessTransaction
 
 }
 
 class AddBusinessTransactionUseCase(private val companyProvider: GetCompany,
                                     private val addBusinessTransactionInRepo: AddBusinessTransactionInRepository): AddParentBusinessTransaction {
 
-    override fun addBusinessTransaction(businessTransaction: AddBusinessTransactionDTO): BusinessTransaction {
+    override fun addBusinessTransaction(businessTransaction: AddBusinessTransactionMessage): BusinessTransaction {
 
         val company: Company = companyProvider.getCompany()
 

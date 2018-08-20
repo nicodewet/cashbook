@@ -13,7 +13,7 @@ import java.time.LocalDate
  * @param gstInCents
  * @param evidenceLink
  */
-data class AddBusinessTransactionDTO(
+data class AddBusinessTransactionMessage(
         val type: BusinessTransactionType,
         val parentTransactionUUID: String? = null,
         val scheduledDate: LocalDate? = null,

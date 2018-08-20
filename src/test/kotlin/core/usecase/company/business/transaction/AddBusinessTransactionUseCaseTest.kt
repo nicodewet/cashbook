@@ -1,8 +1,8 @@
 package com.thorgil.cashbook.core.usecase.company.business.transaction
 
 import com.thorgil.cashbook.core.entity.*
-import com.thorgil.cashbook.core.usecase.business.transaction.AddBusinessTransactionDTO
 import com.thorgil.cashbook.core.usecase.business.transaction.AddBusinessTransactionInRepository
+import com.thorgil.cashbook.core.usecase.business.transaction.AddBusinessTransactionMessage
 import com.thorgil.cashbook.core.usecase.business.transaction.AddBusinessTransactionUseCase
 import com.thorgil.cashbook.core.usecase.business.transaction.BusinessTransactionException
 import com.thorgil.cashbook.core.usecase.company.GetCompany
@@ -56,7 +56,7 @@ class AddBusinessTransactionUseCaseTest {
 
         // === Arrange ===
 
-        val addBusinessTransaction = AddBusinessTransactionDTO(
+        val addBusinessTransaction = AddBusinessTransactionMessage(
                 type = BusinessTransactionType.OWNER_CONTRIBUTION_PAYMENT,
                 completedDate = LocalDate.now(),
                 amountInCents = 2000,
@@ -92,7 +92,7 @@ class AddBusinessTransactionUseCaseTest {
 
         // === Arrange ===
 
-        val addBusinessTransaction = AddBusinessTransactionDTO(
+        val addBusinessTransaction = AddBusinessTransactionMessage(
                 type = BusinessTransactionType.INVOICE_PAYMENT,
                 completedDate = LocalDate.now(),
                 amountInCents = 2000,
@@ -117,7 +117,7 @@ class AddBusinessTransactionUseCaseTest {
 
         // === Arrange ===
 
-        val addBusinessTransWithIncorrectGST = AddBusinessTransactionDTO(
+        val addBusinessTransWithIncorrectGST = AddBusinessTransactionMessage(
                 type = BusinessTransactionType.INVOICE_PAYMENT,
                 completedDate = LocalDate.now(),
                 amountInCents = 2000,
@@ -142,7 +142,7 @@ class AddBusinessTransactionUseCaseTest {
         // === Arrange ===
 
         val tomorrow = LocalDate.now().plusDays(1)
-        val addBusinessTransWithIncorrectSchedDate = AddBusinessTransactionDTO(
+        val addBusinessTransWithIncorrectSchedDate = AddBusinessTransactionMessage(
                 type = BusinessTransactionType.INVOICE_PAYMENT,
                 completedDate = LocalDate.now(),
                 scheduledDate = tomorrow,
@@ -162,7 +162,7 @@ class AddBusinessTransactionUseCaseTest {
     fun `amount field must be a positive value`() {
         // === Arrange ===
 
-        val addBusinessTransaction = AddBusinessTransactionDTO(
+        val addBusinessTransaction = AddBusinessTransactionMessage(
                 type = BusinessTransactionType.OWNER_CONTRIBUTION_PAYMENT,
                 completedDate = LocalDate.now(),
                 amountInCents = -2
@@ -180,7 +180,7 @@ class AddBusinessTransactionUseCaseTest {
     fun `GST must be zero or more when supplied and is less than zero`() {
         // === Arrange ===
 
-        val addBusinessTransaction = AddBusinessTransactionDTO(
+        val addBusinessTransaction = AddBusinessTransactionMessage(
                 type = BusinessTransactionType.OWNER_CONTRIBUTION_PAYMENT,
                 completedDate = LocalDate.now(),
                 amountInCents = 500,
@@ -200,7 +200,7 @@ class AddBusinessTransactionUseCaseTest {
         // === Arrange ===
 
         val yesterday = LocalDate.now().minusDays(1)
-        val addBusinessTransaction = AddBusinessTransactionDTO(
+        val addBusinessTransaction = AddBusinessTransactionMessage(
                 type = BusinessTransactionType.OWNER_CONTRIBUTION_PAYMENT,
                 completedDate = LocalDate.now(),
                 amountInCents = 500,
@@ -220,7 +220,7 @@ class AddBusinessTransactionUseCaseTest {
         // === Arrange ===
 
         val thirtyDaysFromNow = LocalDate.now().plusDays(30)
-        val addBusinessTransaction = AddBusinessTransactionDTO(
+        val addBusinessTransaction = AddBusinessTransactionMessage(
                 type = BusinessTransactionType.OWNER_CONTRIBUTION_PAYMENT,
                 completedDate = null,
                 amountInCents = 500,
