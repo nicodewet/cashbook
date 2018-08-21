@@ -27,14 +27,24 @@ class RestErrorHandler(@Autowired private val messageSource: MessageSource) {
 
         log.info("Processing ${fieldErrors.size} field error(s)")
 
-        return processFieldErrors(fieldErrors)
+        val validationErrorDTO = processFieldErrors(fieldErrors)
+
+        log.info(validationErrorDTO.toString())
+
+        return validationErrorDTO
     }
 
     private fun processFieldErrors(fieldErrors: List<FieldError>): ValidationErrorDTO {
         val dto = ValidationErrorDTO()
 
         for (fieldError in fieldErrors) {
+
+            log.info("${fieldError.field}")
+
             val localizedErrorMessage = resolveLocalizedErrorMessage(fieldError)
+
+            log.info("${localizedErrorMessage}")
+
             dto.addFieldError(fieldError.field, localizedErrorMessage)
         }
 

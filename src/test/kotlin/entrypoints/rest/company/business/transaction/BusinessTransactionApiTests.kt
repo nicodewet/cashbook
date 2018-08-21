@@ -95,6 +95,7 @@ class BusinessTransactionApiTests(@Autowired val mockMvc: MockMvc) {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest)
+                .andExpect(MockMvcResultMatchers.content().string("{}"))
     }
 
     @Test
@@ -113,12 +114,17 @@ class BusinessTransactionApiTests(@Autowired val mockMvc: MockMvc) {
 
         val addBusinessTransactionJson = mapper.writeValueAsString(addBusinessTransactionPostBody)
 
+        System.out.println("")
+        System.out.println(addBusinessTransactionJson)
+        System.out.println("")
+
         // Act and Assert
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/business/transaction").content(addBusinessTransactionJson)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest)
+                .andExpect(MockMvcResultMatchers.content().string("{}"))
     }
 
 }
