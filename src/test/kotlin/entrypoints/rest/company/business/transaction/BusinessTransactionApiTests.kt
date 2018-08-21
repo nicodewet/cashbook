@@ -94,7 +94,7 @@ class BusinessTransactionApiTests(@Autowired val mockMvc: MockMvc) {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/business/transaction").content(addBusinessTransactionJson)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().is4xxClientError)
+                .andExpect(MockMvcResultMatchers.status().isBadRequest)
     }
 
     @Test
@@ -118,7 +118,7 @@ class BusinessTransactionApiTests(@Autowired val mockMvc: MockMvc) {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/business/transaction").content(addBusinessTransactionJson)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().is4xxClientError)
+                .andExpect(MockMvcResultMatchers.status().isBadRequest)
     }
 
 }

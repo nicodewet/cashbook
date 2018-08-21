@@ -4,6 +4,7 @@ import com.thorgil.cashbook.core.entity.BusinessTransactionType
 import java.time.LocalDate
 import javax.validation.constraints.FutureOrPresent
 import javax.validation.constraints.PastOrPresent
+import javax.validation.constraints.PositiveOrZero
 
 /**
  * @param scheduledDate should be serialized in format String of "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
@@ -15,6 +16,8 @@ data class AddBusinessTransactionPostBody(val type: BusinessTransactionType,
                                           val scheduledDate: LocalDate? = null,
                                           @get: PastOrPresent (message = "{completed_date.past_or_present}")
                                           val completedDate: LocalDate?,
+                                          @get: PositiveOrZero
                                           val amountInCents: Int,
+                                          @get: PositiveOrZero
                                           val gstInCents: Int = 0,
                                           val evidenceLink: String? = null)
