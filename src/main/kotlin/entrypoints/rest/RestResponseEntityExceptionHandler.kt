@@ -1,6 +1,5 @@
 package com.thorgil.cashbook.entrypoints.rest
 
-import com.thorgil.cashbook.entrypoints.restu.ValidationErrorDTO
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.MessageSource
@@ -14,9 +13,9 @@ import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.ResponseStatus
 
 @ControllerAdvice
-class RestErrorHandler(@Autowired private val messageSource: MessageSource) {
+class RestResponseEntityExceptionHandler @Autowired constructor(var messageSource: MessageSource) {
 
-    private val log = LoggerFactory.getLogger(RestErrorHandler::class.java)
+    private val log = LoggerFactory.getLogger(RestResponseEntityExceptionHandler::class.java)
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
