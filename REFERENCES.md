@@ -8,3 +8,4 @@
 * [Spring MVC REST Error Handling With @ControllerAdvice](https://www.petrikainulainen.net/programming/spring-framework/spring-from-the-trenches-adding-validation-to-a-rest-api/)
 * [Spring MVC Exceptions (@ControllerAdvice) - Official Documentation](https://docs.spring.io/spring/docs/5.0.8.RELEASE/spring-framework-reference/web.html#mvc-ann-exceptionhandler)
 * [Exception Handling in Spring MVC](https://spring.io/blog/2013/11/01/exception-handling-in-spring-mvc)
+* [Kotlin's a great language for JSON](https://medium.com/square-corner-blog/kotlins-a-great-language-for-json-fcd6ef99256b)

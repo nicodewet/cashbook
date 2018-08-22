@@ -95,7 +95,11 @@ class BusinessTransactionApiTests(@Autowired val mockMvc: MockMvc) {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest)
-                .andExpect(MockMvcResultMatchers.content().string("{\"fieldErrors\":[{\"field\":\"completedDate\",\"message\":\"PastOrPresent.addBusinessTransactionPostBody.completedDate\"}]}"))
+                .andExpect(MockMvcResultMatchers.content().string(
+                        """
+                            {"fieldErrors":[{"field":"completedDate","message":"PastOrPresent.addBusinessTransactionPostBody.completedDate"}]}
+                        """.trimIndent()
+                ))
     }
 
     @Test
@@ -124,7 +128,11 @@ class BusinessTransactionApiTests(@Autowired val mockMvc: MockMvc) {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest)
-                .andExpect(MockMvcResultMatchers.content().string("{\"fieldErrors\":[{\"field\":\"scheduledDate\",\"message\":\"FutureOrPresent.addBusinessTransactionPostBody.scheduledDate\"}]}"))
+                .andExpect(MockMvcResultMatchers.content().string(
+                        """
+                            {"fieldErrors":[{"field":"scheduledDate","message":"FutureOrPresent.addBusinessTransactionPostBody.scheduledDate"}]}
+                        """.trimIndent()
+                ))
     }
 
 }
