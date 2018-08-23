@@ -3,7 +3,6 @@ package com.thorgil.cashbook.entrypoints.rest
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.MessageSource
-import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.http.HttpStatus
 import org.springframework.validation.FieldError
 import org.springframework.web.bind.MethodArgumentNotValidException
@@ -38,29 +37,12 @@ class RestResponseEntityExceptionHandler @Autowired constructor(var messageSourc
 
         for (fieldError in fieldErrors) {
 
-            log.info("${fieldError.field}")
+            val fieldErrorCodes = fieldError.codes
+            val fieldErrorCodeMessage = fieldErrorCodes!![0]
 
-            val localizedErrorMessage = resolveLocalizedErrorMessage(fieldError)
-
-            log.info("${localizedErrorMessage}")
-
-            dto.addFieldError(fieldError.field, localizedErrorMessage)
+            dto.addFieldError(fieldError.field, fieldError.defaultMessage?: fieldErrorCodeMessage)
         }
 
         return dto
-    }
-
-    private fun resolveLocalizedErrorMessage(fieldError: FieldError): String {
-        val currentLocale = LocaleContextHolder.getLocale()
-        var localizedErrorMessage = messageSource.getMessage(fieldError, currentLocale)
-
-        //If the message was not found, return the most accurate field error code instead.
-        //You can remove this check if you prefer to get the default error message.
-        if (localizedErrorMessage == fieldError.defaultMessage) {
-            val fieldErrorCodes = fieldError.codes
-            localizedErrorMessage = fieldErrorCodes!![0]
-        }
-
-        return localizedErrorMessage
     }
 }

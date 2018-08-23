@@ -97,7 +97,7 @@ class BusinessTransactionApiTests(@Autowired val mockMvc: MockMvc) {
                 .andExpect(MockMvcResultMatchers.status().isBadRequest)
                 .andExpect(MockMvcResultMatchers.content().string(
                         """
-                            {"fieldErrors":[{"field":"completedDate","message":"PastOrPresent.addBusinessTransactionPostBody.completedDate"}]}
+                            {"fieldErrors":[{"field":"completedDate","message":"Completed date must be a past or present date"}]}
                         """.trimIndent()
                 ))
     }
@@ -130,7 +130,7 @@ class BusinessTransactionApiTests(@Autowired val mockMvc: MockMvc) {
                 .andExpect(MockMvcResultMatchers.status().isBadRequest)
                 .andExpect(MockMvcResultMatchers.content().string(
                         """
-                            {"fieldErrors":[{"field":"scheduledDate","message":"FutureOrPresent.addBusinessTransactionPostBody.scheduledDate"}]}
+                            {"fieldErrors":[{"field":"scheduledDate","message":"Scheduled date must be a future or present date"}]}
                         """.trimIndent()
                 ))
     }

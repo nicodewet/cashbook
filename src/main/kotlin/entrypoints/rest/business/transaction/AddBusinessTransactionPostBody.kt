@@ -12,9 +12,9 @@ import javax.validation.constraints.PositiveOrZero
  */
 data class AddBusinessTransactionPostBody(val type: BusinessTransactionType,
                                           val parentTransactionUUID: String? = null,
-                                          @get: FutureOrPresent (message = "{scheduled_date.future_or_present}")
+                                          @get: FutureOrPresent (message = "Scheduled date must be a future or present date")
                                           val scheduledDate: LocalDate? = null,
-                                          @get: PastOrPresent (message = "{completed_date.past_or_present}")
+                                          @get: PastOrPresent (message = "Completed date must be a past or present date")
                                           val completedDate: LocalDate?,
                                           @get: PositiveOrZero
                                           val amountInCents: Int,
