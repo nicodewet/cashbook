@@ -69,16 +69,18 @@ Apart from being slow, the above build process is suboptimal because we are viol
 principle and also the process is not as robust as it could be. The explanations for each is provided below.
 
 * We are violating the DRY principle because the docker build step and associated configuration has already been done in
-out build.gradle file.
-* The process is not as robust as it could be because we have no control over the version on Docker Engine used to build
-the image, nor whether it's even installed on the build server, we could use *Docker in Docker* to solve this problem.
-* The process is also not as robust as it could be because the JAR_FILE reference is subject to change when we do a 
+our build.gradle file.
+* The process not as robust as it could be because the JAR_FILE reference is subject to change when we do a 
 release.
 
 In short, our build server process should be exactly the same as our local process ($ ./gradlew docker) - that is the 
-gist of the problem we'll solve next.
+gist of the problem we'll solve next by creating our own CI image and using it to reduce the docker image build to 
+one step.
 
 #### One step build with a CI image
+
+Our goal with a one step CI image is to execute the exact same command, namely *./gradlew docker* that we execute on
+our local machines as developers.
 
 ##### build our CI image
 
