@@ -1,12 +1,7 @@
-# Docker multistage build
+# docker run --rm -v "$PWD":/home/gradle/project -w /home/gradle/project gradle gradle build
 
-FROM gradle:jdk10 as compile
-COPY --chown=gradle:gradle . /home/source/java
-WORKDIR /home/source/java
-RUN gradle clean build
-
-FROM openjdk:10-jre-slim
-WORKDIR /home/application/java
-COPY --from=compile "/home/source/java/build/libs/cashbook-0.0.1-SNAPSHOT.jar" .
-EXPOSE 8080
-ENTRYPOINT [ "java", "-jar", "/home/application/java/cashbook-0.0.1-SNAPSHOT.jar"]
+FROM openjdk:8-jdk-alpine
+VOLUME /tmp
+ARG JAR_FILE
+COPY ${JAR_FILE} app.jar
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
