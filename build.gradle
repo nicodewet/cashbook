@@ -36,7 +36,7 @@ bootJar {
 }
 
 docker {
-	dependsOn build
+	dependsOn this.getTasksByName("build", false).first()
 	name "${project.group}/${bootJar.baseName}"
 	files bootJar.archivePath
 	buildArgs(['JAR_FILE': "${bootJar.archiveName}"])

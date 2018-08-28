@@ -1,8 +1,7 @@
 package com.thorgil.cashbook
 
 import com.thorgil.cashbook.core.entity.Company
-import com.thorgil.cashbook.core.usecase.business.transaction.AddBusinessTransactionInRepository
-import com.thorgil.cashbook.core.usecase.business.transaction.AddBusinessTransactionUseCase
+import com.thorgil.cashbook.core.usecase.business.transaction.*
 import com.thorgil.cashbook.core.usecase.company.GetCompany
 import com.thorgil.cashbook.core.usecase.company.entity.GetCompanyUseCase
 import com.thorgil.cashbook.dataproviders.BusinessTransactionDataProvider
@@ -59,6 +58,11 @@ class CashbookApplication {
     @Bean
     fun businessTransactionUseCase(companyProvider: GetCompany, addBusinessTransactionInRepo: AddBusinessTransactionInRepository): AddBusinessTransactionUseCase {
         return AddBusinessTransactionUseCase(companyProvider, addBusinessTransactionInRepo)
+    }
+
+    @Bean
+    fun fetchBusinessTransactionUseCase(fetchBusinessTransactionsFromRepo: FetchBusinessTransactionsFromRepository): FetchBusinessTransactions {
+        return FetchBusinessTransactionsUseCase(fetchBusinessTransactionsFromRepo)
     }
 }
 

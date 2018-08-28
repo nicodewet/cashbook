@@ -6,8 +6,8 @@ curl -d '{"type":"INVOICE_PAYMENT","parentTransactionUUID":null,"scheduledDate":
 
 ## build
 
-Ultimately the sure-fire build process is dictated by our *build server* build steps which you can reliably run
-on your local machine. 
+Ultimately the sure-fire build process is dictated by our *One step build with a CI image* build steps which you can 
+reliably run on your local machine. 
 
 If your only interest is in a reliable build and shipping process then skip ahead.
 

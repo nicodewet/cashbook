@@ -135,4 +135,60 @@ class BusinessTransactionApiTests(@Autowired val mockMvc: MockMvc) {
                 ))
     }
 
+    @Test
+    fun `post invalid business transaction - amountInCents negative`() {
+
+        // Arrange
+
+        whenever(company.getCompany()).thenReturn(companyProvider.getCompany())
+
+        val mapper = ObjectMapper()
+        mapper.registerModule(JavaTimeModule())
+        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+
+        val addBusinessTransactionPostBody = AddBusinessTransactionPostBody(type = BusinessTransactionType.INVOICE_PAYMENT,
+                completedDate = LocalDate.parse("2018-07-31"), amountInCents = -23000)
+
+        val addBusinessTransactionJson = mapper.writeValueAsString(addBusinessTransactionPostBody)
+
+        // Act and Assert
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/business/transaction").content(addBusinessTransactionJson)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest)
+                .andExpect(MockMvcResultMatchers.content().string(
+                        """
+                            {"fieldErrors":[{"field":"amountInCents","message":"must be greater than or equal to 0"}]}
+                        """.trimIndent()
+                ))
+    }
+
+    @Test
+    fun `post invalid business transaction - gstInCents negative`() {
+
+        // Arrange
+
+        whenever(company.getCompany()).thenReturn(companyProvider.getCompany())
+
+        val mapper = ObjectMapper()
+        mapper.registerModule(JavaTimeModule())
+        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+
+        val addBusinessTransactionPostBody = AddBusinessTransactionPostBody(type = BusinessTransactionType.INVOICE_PAYMENT,
+                completedDate = LocalDate.parse("2018-07-31"), amountInCents = 23000, gstInCents = -3450)
+
+        val addBusinessTransactionJson = mapper.writeValueAsString(addBusinessTransactionPostBody)
+
+        // Act and Assert
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/business/transaction").content(addBusinessTransactionJson)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest)
+                .andExpect(MockMvcResultMatchers.content().string(
+                        """
+                            {"fieldErrors":[{"field":"gstInCents","message":"must be greater than or equal to 0"}]}
+                        """.trimIndent()
+                ))
+    }
+
 }
