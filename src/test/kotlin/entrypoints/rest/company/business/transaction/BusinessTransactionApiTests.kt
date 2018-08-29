@@ -9,6 +9,7 @@ import com.thorgil.cashbook.core.entity.Company
 import com.thorgil.cashbook.core.entity.GstStatus
 import com.thorgil.cashbook.core.usecase.company.GetCompany
 import com.thorgil.cashbook.entrypoints.rest.business.transaction.AddBusinessTransactionPostBody
+import com.thorgil.cashbook.entrypoints.rest.business.transaction.BusinessTransactionApiEndpoint
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -48,6 +49,7 @@ class BusinessTransactionApiTests(@Autowired val mockMvc: MockMvc) {
                         gstStatus = GstStatus.REGISTERED)
             }
         }
+        private val TRANSACTIONS_API__URL = BusinessTransactionApiEndpoint.BUSINESS_TRANSACTION_END_POINT_URL
     }
 
     @Test
@@ -67,7 +69,7 @@ class BusinessTransactionApiTests(@Autowired val mockMvc: MockMvc) {
         val addBusinessTransactionJson = mapper.writeValueAsString(addBusinessTransactionPostBody)
 
         // Act and Assert
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/business/transaction").content(addBusinessTransactionJson)
+        mockMvc.perform(MockMvcRequestBuilders.post(TRANSACTIONS_API__URL).content(addBusinessTransactionJson)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk)
@@ -91,7 +93,7 @@ class BusinessTransactionApiTests(@Autowired val mockMvc: MockMvc) {
 
         // Act and Assert
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/business/transaction").content(addBusinessTransactionJson)
+        mockMvc.perform(MockMvcRequestBuilders.post(TRANSACTIONS_API__URL).content(addBusinessTransactionJson)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest)
@@ -124,7 +126,7 @@ class BusinessTransactionApiTests(@Autowired val mockMvc: MockMvc) {
 
         // Act and Assert
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/business/transaction").content(addBusinessTransactionJson)
+        mockMvc.perform(MockMvcRequestBuilders.post(TRANSACTIONS_API__URL).content(addBusinessTransactionJson)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest)
@@ -152,7 +154,7 @@ class BusinessTransactionApiTests(@Autowired val mockMvc: MockMvc) {
         val addBusinessTransactionJson = mapper.writeValueAsString(addBusinessTransactionPostBody)
 
         // Act and Assert
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/business/transaction").content(addBusinessTransactionJson)
+        mockMvc.perform(MockMvcRequestBuilders.post(TRANSACTIONS_API__URL).content(addBusinessTransactionJson)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest)
@@ -180,7 +182,7 @@ class BusinessTransactionApiTests(@Autowired val mockMvc: MockMvc) {
         val addBusinessTransactionJson = mapper.writeValueAsString(addBusinessTransactionPostBody)
 
         // Act and Assert
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/business/transaction").content(addBusinessTransactionJson)
+        mockMvc.perform(MockMvcRequestBuilders.post(TRANSACTIONS_API__URL).content(addBusinessTransactionJson)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest)

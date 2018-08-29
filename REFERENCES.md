@@ -11,3 +11,7 @@
 * [Kotlin's a great language for JSON](https://medium.com/square-corner-blog/kotlins-a-great-language-for-json-fcd6ef99256b)
 * [Guide to Spring Boot REST API Error Handling](https://www.toptal.com/java/spring-boot-rest-api-error-handling)
 * [Building Java Docker images with Gradle and Docker multistage builds](http://paulbakker.io/java/docker-gradle-multistage/)
+
+## REST
+
+* [Richardson Maturity Model - steps toward the glory of REST](https://martinfowler.com/articles/richardsonMaturityModel.html)

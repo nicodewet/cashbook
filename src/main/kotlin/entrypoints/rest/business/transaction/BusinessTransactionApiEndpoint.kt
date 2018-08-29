@@ -3,6 +3,7 @@ package com.thorgil.cashbook.entrypoints.rest.business.transaction
 import com.thorgil.cashbook.core.usecase.business.transaction.AddBusinessTransactionMessage
 import com.thorgil.cashbook.core.usecase.business.transaction.AddBusinessTransactionUseCase
 import com.thorgil.cashbook.core.usecase.business.transaction.BusinessTransactionException
+import com.thorgil.cashbook.entrypoints.rest.business.transaction.BusinessTransactionApiEndpoint.Companion.BUSINESS_TRANSACTION_END_POINT_URL
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -15,8 +16,12 @@ import java.time.format.DateTimeFormatter
 import javax.validation.Valid
 
 @RestController
-@RequestMapping("/api/business/transaction")
+@RequestMapping(BUSINESS_TRANSACTION_END_POINT_URL)
 class BusinessTransactionApiEndpoint(private val addBusinessTransactionUseCase: AddBusinessTransactionUseCase) {
+
+    companion object {
+        const val BUSINESS_TRANSACTION_END_POINT_URL: String = "/api/business/transactions"
+    }
 
     private val log = LoggerFactory.getLogger(BusinessTransactionApiEndpoint::class.java)
 
@@ -48,4 +53,7 @@ class BusinessTransactionApiEndpoint(private val addBusinessTransactionUseCase: 
 
         return ResponseEntity.ok("BusinessTransaction added at $formatted")
     }
+
+    // http://example.com/users/12345/bids?start=01-01-2012&end=01-31-2012
+    // TODO  fun getBusinessTransactions()
 }
