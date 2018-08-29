@@ -6,16 +6,17 @@ import com.thorgil.cashbook.core.usecase.business.transaction.BusinessTransactio
 import com.thorgil.cashbook.entrypoints.rest.business.transaction.BusinessTransactionApiEndpoint.Companion.BUSINESS_TRANSACTION_END_POINT_URL
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.validation.annotation.Validated
+import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.validation.Valid
+import javax.validation.constraints.Pattern
 
 @RestController
+@Validated
 @RequestMapping(BUSINESS_TRANSACTION_END_POINT_URL)
 class BusinessTransactionApiEndpoint(private val addBusinessTransactionUseCase: AddBusinessTransactionUseCase) {
 
@@ -54,6 +55,16 @@ class BusinessTransactionApiEndpoint(private val addBusinessTransactionUseCase: 
         return ResponseEntity.ok("BusinessTransaction added at $formatted")
     }
 
-    // http://example.com/users/12345/bids?start=01-01-2012&end=01-31-2012
-    // TODO  fun getBusinessTransactions()
+    // curl -sS 'http://localhost:8080/api/business/transactions?start=01-2018&end=02-2018'
+    @RequestMapping(params = ["start", "end"],
+                    method = [RequestMethod.GET],
+                    produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun getBusinessTransactions(@Pattern(regexp = "^\\d{2}-\\d{4}$") @RequestParam("start") start: String,
+                                @Pattern(regexp = "^\\d{2}-\\d{4}$") @RequestParam("end") end: String):
+            ResponseEntity<String> {
+
+        log.info("${start.toString()} ${end.toString()}")
+
+        return ResponseEntity.ok("POO")
+    }
 }

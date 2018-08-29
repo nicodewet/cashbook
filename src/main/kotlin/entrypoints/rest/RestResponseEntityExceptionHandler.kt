@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.ResponseStatus
+import javax.validation.ConstraintViolationException
 
 @ControllerAdvice
 class RestResponseEntityExceptionHandler @Autowired constructor(var messageSource: MessageSource) {
@@ -28,6 +29,23 @@ class RestResponseEntityExceptionHandler @Autowired constructor(var messageSourc
         val validationErrorDTO = processFieldErrors(fieldErrors)
 
         log.info(validationErrorDTO.toString())
+
+        return validationErrorDTO
+    }
+
+    @ExceptionHandler(ConstraintViolationException::class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    fun processRequestParameterValidationError(ex: ConstraintViolationException): ValidationErrorDTO {
+        val constraintViolations = ex.constraintViolations
+
+        log.info("Processing ${constraintViolations.size} constraint violation(s)")
+
+        val  validationErrorDTO = ValidationErrorDTO()
+
+        for (constraintViolation in constraintViolations) {
+            // TODO finish
+        }
 
         return validationErrorDTO
     }
