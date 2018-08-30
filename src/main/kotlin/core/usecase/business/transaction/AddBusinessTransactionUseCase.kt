@@ -4,7 +4,7 @@ import com.thorgil.cashbook.core.entity.*
 import com.thorgil.cashbook.core.usecase.company.GetCompany
 import java.time.LocalDate
 
-interface AddParentBusinessTransaction {
+interface AddBusinessTransaction {
 
     /**
      * Add a cashbook transaction to the system.
@@ -20,7 +20,7 @@ interface AddParentBusinessTransaction {
 }
 
 class AddBusinessTransactionUseCase(private val companyProvider: GetCompany,
-                                    private val addBusinessTransactionInRepo: AddBusinessTransactionInRepository): AddParentBusinessTransaction {
+                                    private val addBusinessTransactionInRepo: AddBusinessTransactionInRepository): AddBusinessTransaction {
 
     override fun addBusinessTransaction(businessTransaction: AddBusinessTransactionMessage): BusinessTransaction {
 

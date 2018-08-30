@@ -1,8 +1,10 @@
 package com.thorgil.cashbook.entrypoints.rest.business.transaction
 
+import com.thorgil.cashbook.core.entity.BusinessTransaction
 import com.thorgil.cashbook.core.usecase.business.transaction.AddBusinessTransactionMessage
 import com.thorgil.cashbook.core.usecase.business.transaction.AddBusinessTransactionUseCase
 import com.thorgil.cashbook.core.usecase.business.transaction.BusinessTransactionException
+import com.thorgil.cashbook.core.usecase.business.transaction.FetchBusinessTransactions
 import com.thorgil.cashbook.entrypoints.rest.business.transaction.BusinessTransactionApiEndpoint.Companion.BUSINESS_TRANSACTION_END_POINT_URL
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -11,6 +13,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
+import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import javax.validation.Valid
 import javax.validation.constraints.Pattern
@@ -18,7 +21,8 @@ import javax.validation.constraints.Pattern
 @RestController
 @Validated
 @RequestMapping(BUSINESS_TRANSACTION_END_POINT_URL)
-class BusinessTransactionApiEndpoint(private val addBusinessTransactionUseCase: AddBusinessTransactionUseCase) {
+class BusinessTransactionApiEndpoint(private val addBusinessTransactionUseCase: AddBusinessTransactionUseCase,
+                                     private val fetchBusinessTransactions: FetchBusinessTransactions) {
 
     companion object {
         const val BUSINESS_TRANSACTION_END_POINT_URL: String = "/api/business/transactions"
@@ -55,16 +59,18 @@ class BusinessTransactionApiEndpoint(private val addBusinessTransactionUseCase: 
         return ResponseEntity.ok("BusinessTransaction added at $formatted")
     }
 
-    // curl -sS 'http://localhost:8080/api/business/transactions?start=01-2018&end=02-2018'
-    @RequestMapping(params = ["start", "end"],
+    // curl -sS 'http://localhost:8080/api/business/transactions?period=2018-06'
+    @RequestMapping(params = ["period"],
                     method = [RequestMethod.GET],
                     produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun getBusinessTransactions(@Pattern(regexp = "^\\d{2}-\\d{4}$") @RequestParam("start") start: String,
-                                @Pattern(regexp = "^\\d{2}-\\d{4}$") @RequestParam("end") end: String):
-            ResponseEntity<String> {
+    fun getBusinessTransactions(@Pattern(regexp = "^\\d{4}-\\d{2}$") @RequestParam("period") period: String):
+            ResponseEntity<List<BusinessTransaction>> {
 
-        log.info("${start.toString()} ${end.toString()}")
+        log.info("${period.toString()}")
 
-        return ResponseEntity.ok("POO")
+        val period: YearMonth = YearMonth.parse(period)
+        val transactions: List<BusinessTransaction> = fetchBusinessTransactions.fetchBusinessTransactions(period)
+
+        return ResponseEntity.ok(transactions)
     }
 }

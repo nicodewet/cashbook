@@ -44,7 +44,7 @@ class RestResponseEntityExceptionHandler @Autowired constructor(var messageSourc
         val  validationErrorDTO = ValidationErrorDTO()
 
         for (constraintViolation in constraintViolations) {
-            // TODO finish
+            validationErrorDTO.addFieldError(constraintViolation.propertyPath.toString(), constraintViolation.invalidValue.toString() + " " + constraintViolation.message)
         }
 
         return validationErrorDTO

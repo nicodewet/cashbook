@@ -1,7 +1,8 @@
 # cashbook
 
 ```shell
-curl -d '{"type":"INVOICE_PAYMENT","parentTransactionUUID":null,"scheduledDate":"2018-08-20","completedDate":null,"amountInCents":23000,"gstInCents":0,"evidenceLink":null}' -H "Content-Type: application/json" -X POST http://localhost:8080/api/business/transactions
+$ curl -d '{"type":"INVOICE_PAYMENT","parentTransactionUUID":null,"scheduledDate":null,"completedDate":"2018-06-20","amountInCents":23000,"gstInCents":0,"evidenceLink":null}' -H "Content-Type: application/json" -X POST http://localhost:8080/api/business/transactions
+$ curl -sS 'http://localhost:8080/api/business/transactions?period=2018-06'
 ```
 
 ## build
