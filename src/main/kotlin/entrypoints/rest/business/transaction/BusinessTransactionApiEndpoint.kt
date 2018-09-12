@@ -12,9 +12,7 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
-import java.time.LocalDateTime
 import java.time.YearMonth
-import java.time.format.DateTimeFormatter
 import javax.validation.Valid
 import javax.validation.constraints.Pattern
 
@@ -31,7 +29,7 @@ class BusinessTransactionApiEndpoint(private val addBusinessTransactionUseCase: 
     private val log = LoggerFactory.getLogger(BusinessTransactionApiEndpoint::class.java)
 
     @PostMapping
-    fun putBusinessTransaction(@Valid @RequestBody businessTransactionPostBody: AddBusinessTransactionPostBody): ResponseEntity<String> {
+    fun putBusinessTransaction(@Valid @RequestBody businessTransactionPostBody: AddBusinessTransactionPostBody): ResponseEntity<AddBusinessTransactionResponse> {
 
         try {
             log.info("HTTP POST: $businessTransactionPostBody")
@@ -46,17 +44,14 @@ class BusinessTransactionApiEndpoint(private val addBusinessTransactionUseCase: 
                     evidenceLink = businessTransactionPostBody.evidenceLink
             )
 
-            addBusinessTransactionUseCase.addBusinessTransaction(addBusinessTransactionMessage)
+            val addedBusinessTransaction =  addBusinessTransactionUseCase.addBusinessTransaction(addBusinessTransactionMessage)
+
+            return ResponseEntity.ok(AddBusinessTransactionResponse(addedBusinessTransaction.uuid,null))
 
         } catch (e: BusinessTransactionException) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.message)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AddBusinessTransactionResponse(null,e.message))
         }
 
-        val current = LocalDateTime.now()
-        val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss.SSS")
-        val formatted = current.format(formatter)
-
-        return ResponseEntity.ok("BusinessTransaction added at $formatted")
     }
 
     // curl -sS 'http://localhost:8080/api/business/transactions?period=2018-06'
@@ -66,10 +61,8 @@ class BusinessTransactionApiEndpoint(private val addBusinessTransactionUseCase: 
     fun getBusinessTransactions(@Pattern(regexp = "^\\d{4}-\\d{2}$") @RequestParam("period") period: String):
             ResponseEntity<List<BusinessTransaction>> {
 
-        log.info("${period.toString()}")
-
-        val period: YearMonth = YearMonth.parse(period)
-        val transactions: List<BusinessTransaction> = fetchBusinessTransactions.fetchBusinessTransactions(period)
+        val specifiedPeriod: YearMonth = YearMonth.parse(period)
+        val transactions: List<BusinessTransaction> = fetchBusinessTransactions.fetchBusinessTransactions(specifiedPeriod)
 
         return ResponseEntity.ok(transactions)
     }

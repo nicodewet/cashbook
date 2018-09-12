@@ -21,3 +21,9 @@ data class AddBusinessTransactionPostBody(val type: BusinessTransactionType,
                                           @get: PositiveOrZero
                                           val gstInCents: Int = 0,
                                           val evidenceLink: String? = null)
+
+/**
+ * @param uuid newly created BusinessTransaction UUID, not present if validationErrorMessage present
+ * @param validationErrorMessage only present if a business rule was violated in the add request
+ */
+data class AddBusinessTransactionResponse(val uuid: String?, val validationErrorMessage: String?)

@@ -12,6 +12,11 @@
 * [Guide to Spring Boot REST API Error Handling](https://www.toptal.com/java/spring-boot-rest-api-error-handling)
 * [Building Java Docker images with Gradle and Docker multistage builds](http://paulbakker.io/java/docker-gradle-multistage/)
 
+## Testing
+
+* [JsonPath](https://github.com/json-path/JsonPath)
+* [Hamcrest](https://code.google.com/archive/p/hamcrest/wikis/Tutorial.wiki)
+
 ## REST
 
 * [Richardson Maturity Model - steps toward the glory of REST](https://martinfowler.com/articles/richardsonMaturityModel.html)

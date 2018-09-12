@@ -10,6 +10,7 @@ import com.thorgil.cashbook.core.entity.GstStatus
 import com.thorgil.cashbook.core.usecase.company.GetCompany
 import com.thorgil.cashbook.entrypoints.rest.business.transaction.AddBusinessTransactionPostBody
 import com.thorgil.cashbook.entrypoints.rest.business.transaction.BusinessTransactionApiEndpoint
+import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,11 +21,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import java.time.LocalDate
 import java.time.Month
-
-
-
 
 /**
  * One of the main purposes of integration testing with MockMvc is to verify that model objects are correctly populated
@@ -73,6 +72,8 @@ class BusinessTransactionApiTests(@Autowired val mockMvc: MockMvc) {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk)
+                .andExpect(jsonPath("$.validationErrorMessage", equalTo(null)))
+                .andExpect(jsonPath("$.uuid", not(isEmptyOrNullString())))
     }
 
     @Test
