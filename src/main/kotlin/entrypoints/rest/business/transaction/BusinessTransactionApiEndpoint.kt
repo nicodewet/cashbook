@@ -4,7 +4,7 @@ import com.thorgil.cashbook.core.entity.BusinessTransaction
 import com.thorgil.cashbook.core.usecase.business.transaction.AddBusinessTransactionMessage
 import com.thorgil.cashbook.core.usecase.business.transaction.AddBusinessTransactionUseCase
 import com.thorgil.cashbook.core.usecase.business.transaction.BusinessTransactionException
-import com.thorgil.cashbook.core.usecase.business.transaction.FetchBusinessTransactions
+import com.thorgil.cashbook.core.usecase.business.transaction.FetchBusinessTransactionsUseCase
 import com.thorgil.cashbook.entrypoints.rest.business.transaction.BusinessTransactionApiEndpoint.Companion.BUSINESS_TRANSACTION_END_POINT_URL
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -20,7 +20,7 @@ import javax.validation.constraints.Pattern
 @Validated
 @RequestMapping(BUSINESS_TRANSACTION_END_POINT_URL)
 class BusinessTransactionApiEndpoint(private val addBusinessTransactionUseCase: AddBusinessTransactionUseCase,
-                                     private val fetchBusinessTransactions: FetchBusinessTransactions) {
+                                     private val fetchBusinessTransactionsUseCase: FetchBusinessTransactionsUseCase) {
 
     companion object {
         const val BUSINESS_TRANSACTION_END_POINT_URL: String = "/api/business/transactions"
@@ -61,8 +61,9 @@ class BusinessTransactionApiEndpoint(private val addBusinessTransactionUseCase: 
     fun getBusinessTransactions(@Pattern(regexp = "^\\d{4}-\\d{2}$") @RequestParam("period") period: String):
             ResponseEntity<List<BusinessTransaction>> {
 
+        // TODO: call below can return DateTimeParseException, needs to be handled either here or in ExceptionHandler
         val specifiedPeriod: YearMonth = YearMonth.parse(period)
-        val transactions: List<BusinessTransaction> = fetchBusinessTransactions.fetchBusinessTransactions(specifiedPeriod)
+        val transactions: List<BusinessTransaction> = fetchBusinessTransactionsUseCase.fetchBusinessTransactions(specifiedPeriod)
 
         return ResponseEntity.ok(transactions)
     }

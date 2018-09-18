@@ -32,7 +32,7 @@ import java.util.*
  * @param completedDate if this is set the transaction occurred (reconciliation can occur) and no further action
  *                      is expected
  * @param type
- * @param amountInCents
+ * @param amountInCents this is always exclusive of GST
  * @param gstInCents
  * @param parentTransaction
  * @param childTransactions transactions that are derived from this transaction i.e. they only exist because this
@@ -41,7 +41,7 @@ import java.util.*
  * @param businessTransactionIssue an issue picked up by the system
  * @param businessTransactionIssueDetail free form text with further detail of the issue
  */
-class BusinessTransaction(val uuid: String = UUID.randomUUID().toString(),
+open class BusinessTransaction(val uuid: String = UUID.randomUUID().toString(),
                           val createdTimestamp: LocalDateTime = LocalDateTime.now(),
                           val lastUpdateTimestamp: LocalDateTime = LocalDateTime.now(),
                           val scheduledDate: LocalDate?,

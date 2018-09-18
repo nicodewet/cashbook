@@ -37,6 +37,10 @@ class BusinessTransactionApiTests(@Autowired val mockMvc: MockMvc) {
     @MockBean
     private lateinit var company: GetCompany
 
+//    @MockBean
+    // TODO: move fetch based tests to a specific class else we will have to init this and don't want to
+//    private lateinit var fetchBusinessTransactionsUseCase: FetchBusinessTransactionsUseCase
+
     companion object {
         private  val companyProvider: GetCompany = object: GetCompany {
             override fun getCompany(): Company {
@@ -193,5 +197,35 @@ class BusinessTransactionApiTests(@Autowired val mockMvc: MockMvc) {
                         """.trimIndent()
                 ))
     }
+
+//    @Test
+//    fun `fetch business transactions by yearmonth - expected list returned`() {
+//
+//        // Arrange
+//        val businessTransaction = BusinessTransaction(completedDate = LocalDate.now(),
+//                                                        scheduledDate = null,
+//                                                        type = BusinessTransactionType.INVOICE_PAYMENT,
+//                                                        amountInCents = 100,
+//                                                        gstInCents = 15)
+//        val businessTransactions = listOf(businessTransaction)
+//
+//        whenever(fetchBusinessTransactionsUseCase.fetchBusinessTransactions(any())).thenReturn(businessTransactions)
+//
+//        // Act and Assert
+//
+//        // TODO:
+//
+//    }
+
+//    @Test
+//    fun `fetch business transactions by yearmonth - empty list returned`() {
+//
+//        // Arrange
+//
+//        // TODO: there should be no need to POST a transaction, we should be able to leverage mocking or stubbing
+//
+//        // Act and Assert
+//
+//    }
 
 }

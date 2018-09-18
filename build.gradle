@@ -72,7 +72,7 @@ dependencies {
 	testCompile('org.springframework.boot:spring-boot-starter-test') {
 		exclude module: 'junit'
 	}
-	testCompile("com.nhaarman:mockito-kotlin:1.5.0")
+	testCompile("com.nhaarman:mockito-kotlin:1.6.0")
 	testImplementation('org.junit.jupiter:junit-jupiter-api')
     testImplementation('io.mockk:mockk:1.8.5')
 	testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine')
