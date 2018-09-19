@@ -15,7 +15,7 @@ interface FetchBusinessTransactions {
 
 }
 
-class FetchBusinessTransactionsUseCase(private val fetchBusinessTransactions: FetchBusinessTransactionsFromRepository): FetchBusinessTransactions {
+open class FetchBusinessTransactionsUseCase(private val fetchBusinessTransactions: FetchBusinessTransactionsFromRepository): FetchBusinessTransactions {
 
     override fun fetchBusinessTransactions(period: YearMonth): List<BusinessTransaction> {
          return fetchBusinessTransactions.fetchBusinessTransactionsFromRepository(period)
