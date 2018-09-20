@@ -24,6 +24,8 @@ class BusinessTransactionApiEndpoint(private val addBusinessTransactionUseCase: 
 
     companion object {
         const val BUSINESS_TRANSACTION_END_POINT_URL: String = "/api/business/transactions"
+        const val PERIOD_REQ_PARAM_NAME: String = "period"
+        const val PERIOD_REQ_PARAM_VALIDATION_ERROR_MESSAGE_POSTFIX = "must match yyyy-dd"
     }
 
     private val log = LoggerFactory.getLogger(BusinessTransactionApiEndpoint::class.java)
@@ -55,10 +57,11 @@ class BusinessTransactionApiEndpoint(private val addBusinessTransactionUseCase: 
     }
 
     // curl -sS 'http://localhost:8080/api/business/transactions?period=2018-06'
-    @RequestMapping(params = ["period"],
+    @RequestMapping(params = [PERIOD_REQ_PARAM_NAME],
                     method = [RequestMethod.GET],
                     produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun getBusinessTransactions(@Pattern(regexp = "^\\d{4}-\\d{2}$") @RequestParam("period") period: String):
+    fun getBusinessTransactions(@Pattern(regexp = "^\\d{4}-\\d{2}$", message="$PERIOD_REQ_PARAM_VALIDATION_ERROR_MESSAGE_POSTFIX")
+                                @RequestParam(PERIOD_REQ_PARAM_NAME) period: String):
             ResponseEntity<List<BusinessTransaction>> {
 
         // TODO: call below can return DateTimeParseException, needs to be handled either here or in ExceptionHandler

@@ -87,4 +87,59 @@ class FetchBusinessTransactionApiTests(@Autowired val mockMvc: MockMvc) {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].businessTransactionIssue", Matchers.equalTo(null) ))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].businessTransactionIssueDetail", Matchers.equalTo(null) ))
     }
+
+    @Test
+    fun `fetch business transactions by erroneous parameters - error returned`() {
+
+        // Arrange
+        val completedDate = LocalDate.now()
+        val businessTransaction = BusinessTransaction(completedDate = completedDate,
+                scheduledDate = null,
+                type = BusinessTransactionType.INVOICE_PAYMENT,
+                amountInCents = 100,
+                gstInCents = 15)
+        val businessTransactions = listOf(businessTransaction)
+
+        whenever(fetchBusinessTransactionsUseCase.fetchBusinessTransactions(any())).thenReturn(businessTransactions)
+        whenever(company.getCompany()).thenReturn(companyProvider.getCompany())
+
+        // Act and Assert
+        val malformatedYearAndDay = "zzzz-yy"
+        val expectedErrorMessage = "$malformatedYearAndDay must match \"^\\d{4}-\\d{2}\$\""
+        mockMvc.perform(MockMvcRequestBuilders.get(
+                BusinessTransactionApiEndpoint.BUSINESS_TRANSACTION_END_POINT_URL + "?period="
+                        + malformatedYearAndDay)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest)
+                .andExpect(MockMvcResultMatchers.jsonPath("$.fieldErrors[0].field", Matchers.equalTo("getBusinessTransactions.period") ))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.fieldErrors[0].message",
+                        Matchers.equalTo("$malformatedYearAndDay ${BusinessTransactionApiEndpoint.PERIOD_REQ_PARAM_VALIDATION_ERROR_MESSAGE_POSTFIX}") ))
+    }
+
+//    @Test
+//    fun `fetch business transactions by erroneous parameters, all 0s - error returned`() {
+//
+//        // Arrange
+//        val completedDate = LocalDate.now()
+//        val businessTransaction = BusinessTransaction(completedDate = completedDate,
+//                scheduledDate = null,
+//                type = BusinessTransactionType.INVOICE_PAYMENT,
+//                amountInCents = 100,
+//                gstInCents = 15)
+//        val businessTransactions = listOf(businessTransaction)
+//
+//        whenever(fetchBusinessTransactionsUseCase.fetchBusinessTransactions(any())).thenReturn(businessTransactions)
+//        whenever(company.getCompany()).thenReturn(companyProvider.getCompany())
+//
+//        // Act and Assert
+//        val malformatedYearAndDay = "0000-00"
+//        val expectedErrorMessage = "$malformatedYearAndDay must match \"^\\d{4}-\\d{2}\$\""
+//        mockMvc.perform(MockMvcRequestBuilders.get(
+//                BusinessTransactionApiEndpoint.BUSINESS_TRANSACTION_END_POINT_URL + "?period="
+//                        + malformatedYearAndDay)
+//                .accept(MediaType.APPLICATION_JSON))
+//                .andExpect(MockMvcResultMatchers.status().isBadRequest)
+//                .andExpect(MockMvcResultMatchers.jsonPath("$.fieldErrors[0].field", Matchers.equalTo("getBusinessTransactions.period") ))
+//                .andExpect(MockMvcResultMatchers.jsonPath("$.fieldErrors[0].message", Matchers.startsWith(expectedErrorMessage) ))
+//    }
 }
