@@ -13,8 +13,11 @@ import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import java.time.YearMonth
+import java.time.format.DateTimeParseException
 import javax.validation.Valid
 import javax.validation.constraints.Pattern
+
+
 
 @RestController
 @Validated
@@ -56,18 +59,33 @@ class BusinessTransactionApiEndpoint(private val addBusinessTransactionUseCase: 
 
     }
 
-    // curl -sS 'http://localhost:8080/api/business/transactions?period=2018-06'
+    /**
+     * curl -sS 'http://localhost:8080/api/business/transactions?period=2018-06'
+     */
     @RequestMapping(params = [PERIOD_REQ_PARAM_NAME],
                     method = [RequestMethod.GET],
                     produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun getBusinessTransactions(@Pattern(regexp = "^\\d{4}-\\d{2}$", message="$PERIOD_REQ_PARAM_VALIDATION_ERROR_MESSAGE_POSTFIX")
+    fun getBusinessTransactions(@Pattern(regexp = "^\\d{4}-\\d{2}$", message=PERIOD_REQ_PARAM_VALIDATION_ERROR_MESSAGE_POSTFIX)
                                 @RequestParam(PERIOD_REQ_PARAM_NAME) period: String):
             ResponseEntity<List<BusinessTransaction>> {
 
-        // TODO: call below can return DateTimeParseException, needs to be handled either here or in ExceptionHandler
-        val specifiedPeriod: YearMonth = YearMonth.parse(period)
-        val transactions: List<BusinessTransaction> = fetchBusinessTransactionsUseCase.fetchBusinessTransactions(specifiedPeriod)
+        /**
+         * This approach to handing YearMonth validation is suboptimal because it breaks our
+         * RestResponseEntityExceptionHandler pattern
+         */
+        val specifiedPeriod: YearMonth? = try { YearMonth.parse(period) } catch (e: DateTimeParseException) { null }
 
-        return ResponseEntity.ok(transactions)
+        return if (specifiedPeriod == null) {
+
+            val transactions: List<BusinessTransaction> = listOf()
+            ResponseEntity.badRequest().body(transactions)
+
+        } else {
+
+            val transactions: List<BusinessTransaction> = fetchBusinessTransactionsUseCase.fetchBusinessTransactions(specifiedPeriod)
+            ResponseEntity.ok(transactions)
+
+        }
+
     }
 }
