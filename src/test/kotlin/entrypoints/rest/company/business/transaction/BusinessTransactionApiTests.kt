@@ -10,6 +10,7 @@ import com.thorgil.cashbook.core.entity.GstStatus
 import com.thorgil.cashbook.core.usecase.company.GetCompany
 import com.thorgil.cashbook.entrypoints.rest.business.transaction.AddBusinessTransactionPostBody
 import com.thorgil.cashbook.entrypoints.rest.business.transaction.BusinessTransactionApiEndpoint
+import org.hamcrest.Matchers
 import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -98,11 +99,9 @@ class BusinessTransactionApiTests(@Autowired val mockMvc: MockMvc) {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest)
-                .andExpect(MockMvcResultMatchers.content().string(
-                        """
-                            {"fieldErrors":[{"field":"completedDate","message":"Completed date must be a past or present date"}]}
-                        """.trimIndent()
-                ))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.fieldErrors[0].field", Matchers.equalTo("completedDate") ))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.fieldErrors[0].message",
+                        Matchers.equalTo("Completed date must be a past or present date") ))
     }
 
     @Test
@@ -131,11 +130,9 @@ class BusinessTransactionApiTests(@Autowired val mockMvc: MockMvc) {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest)
-                .andExpect(MockMvcResultMatchers.content().string(
-                        """
-                            {"fieldErrors":[{"field":"scheduledDate","message":"Scheduled date must be a future or present date"}]}
-                        """.trimIndent()
-                ))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.fieldErrors[0].field", Matchers.equalTo("scheduledDate") ))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.fieldErrors[0].message",
+                        Matchers.equalTo("Scheduled date must be a future or present date") ))
     }
 
     @Test
@@ -159,11 +156,9 @@ class BusinessTransactionApiTests(@Autowired val mockMvc: MockMvc) {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest)
-                .andExpect(MockMvcResultMatchers.content().string(
-                        """
-                            {"fieldErrors":[{"field":"amountInCents","message":"must be greater than or equal to 0"}]}
-                        """.trimIndent()
-                ))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.fieldErrors[0].field", Matchers.equalTo("amountInCents") ))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.fieldErrors[0].message",
+                        Matchers.equalTo("must be greater than or equal to 0") ))
     }
 
     @Test
@@ -187,11 +182,9 @@ class BusinessTransactionApiTests(@Autowired val mockMvc: MockMvc) {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest)
-                .andExpect(MockMvcResultMatchers.content().string(
-                        """
-                            {"fieldErrors":[{"field":"gstInCents","message":"must be greater than or equal to 0"}]}
-                        """.trimIndent()
-                ))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.fieldErrors[0].field", Matchers.equalTo("gstInCents") ))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.fieldErrors[0].message",
+                        Matchers.equalTo("must be greater than or equal to 0") ))
     }
 
 }
