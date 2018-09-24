@@ -76,16 +76,9 @@ class FetchBusinessTransactionApiTests(@Autowired val mockMvc: MockMvc) {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].uuid", Matchers.equalTo(businessTransaction.uuid) ))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].createdTimestamp", Matchers.not(Matchers.isEmptyOrNullString()) ))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].lastUpdateTimestamp", Matchers.not(Matchers.isEmptyOrNullString()) ))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].scheduledDate", Matchers.equalTo(businessTransaction.scheduledDate) ))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].completedDate", Matchers.equalTo(completedDate.toString()) ))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].type", Matchers.equalTo(BusinessTransactionType.INVOICE_PAYMENT.toString()) ))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].amountInCents", Matchers.equalTo(businessTransaction.amountInCents) ))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].gstInCents", Matchers.equalTo(businessTransaction.gstInCents) ))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].parentTransaction", Matchers.equalTo(null) ))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].childTransactions", Matchers.equalTo(null) ))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].evidenceLink", Matchers.equalTo(null) ))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].businessTransactionIssue", Matchers.equalTo(null) ))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].businessTransactionIssueDetail", Matchers.equalTo(null) ))
     }
 
     @Test

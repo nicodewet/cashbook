@@ -67,23 +67,56 @@ class BusinessTransactionApiEndpoint(private val addBusinessTransactionUseCase: 
                     produces = [MediaType.APPLICATION_JSON_VALUE])
     fun getBusinessTransactions(@Pattern(regexp = "^\\d{4}-\\d{2}$", message=PERIOD_REQ_PARAM_VALIDATION_ERROR_MESSAGE_POSTFIX)
                                 @RequestParam(PERIOD_REQ_PARAM_NAME) period: String):
-            ResponseEntity<List<BusinessTransaction>> {
+            ResponseEntity<List<BusinessTransactionDTO>> {
 
         /**
-         * This approach to handing YearMonth validation is suboptimal because it breaks our
-         * RestResponseEntityExceptionHandler pattern
+         * This approach to handling YearMonth validation is suboptimal because it breaks our
+         * RestResponseEntityExceptionHandler and ValidationErrorDTO response pattern
+         *
+         * https://stackoverflow.com/questions/46692104/validate-request-parameter-date-in-spring-rest-controller
          */
         val specifiedPeriod: YearMonth? = try { YearMonth.parse(period) } catch (e: DateTimeParseException) { null }
 
         return if (specifiedPeriod == null) {
 
-            val transactions: List<BusinessTransaction> = listOf()
+            val transactions: List<BusinessTransactionDTO> = listOf()
             ResponseEntity.badRequest().body(transactions)
 
         } else {
 
             val transactions: List<BusinessTransaction> = fetchBusinessTransactionsUseCase.fetchBusinessTransactions(specifiedPeriod)
-            ResponseEntity.ok(transactions)
+            val transactionsResponse = mutableListOf<BusinessTransactionDTO>()
+
+            for (transaction in transactions) {
+
+                val childTransactionUuids = mutableListOf<String>()
+                if (transaction.childTransactions != null && transaction.childTransactions.isNotEmpty()) {
+                    for (childTransaction in transaction.childTransactions) {
+                        childTransactionUuids.add(childTransaction.uuid)
+                    }
+                }
+
+                val transactionDTO: BusinessTransactionDTO = BusinessTransactionDTO(
+                        uuid = transaction.uuid,
+                        createdTimestamp = transaction.createdTimestamp,
+                        lastUpdateTimestamp = transaction.lastUpdateTimestamp,
+                        scheduledDate = transaction.scheduledDate,
+                        completedDate = transaction.completedDate,
+                        type = transaction.type.toString(),
+                        amountInCents = transaction.amountInCents,
+                        gstInCents = transaction.gstInCents,
+                        parentTransactionUuid = transaction.parentTransaction?.uuid,
+                        childTransactionUuids = childTransactionUuids,
+                        evidenceLink = transaction.evidenceLink,
+                        businessTransactionIssue = transaction.businessTransactionIssue?.toString(),
+                        businessTransactionIssueDetail = transaction.businessTransactionIssueDetail
+
+
+                )
+                transactionsResponse.add(transactionDTO)
+            }
+
+            ResponseEntity.ok(transactionsResponse)
 
         }
 
