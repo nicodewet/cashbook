@@ -13,12 +13,18 @@ interface FetchBusinessTransactions {
      */
     fun fetchBusinessTransactions(period: YearMonth): List<BusinessTransaction>
 
+    fun fetchBusinessTransaction(uuid: String): BusinessTransaction?
+
 }
 
 open class FetchBusinessTransactionsUseCase(private val fetchBusinessTransactions: FetchBusinessTransactionsFromRepository): FetchBusinessTransactions {
 
     override fun fetchBusinessTransactions(period: YearMonth): List<BusinessTransaction> {
          return fetchBusinessTransactions.fetchBusinessTransactionsFromRepository(period)
+    }
+
+    override fun fetchBusinessTransaction(uuid: String): BusinessTransaction? {
+        return fetchBusinessTransactions.fetchBusinessTransactionFromRepository(uuid)
     }
 
 }

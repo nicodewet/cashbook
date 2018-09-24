@@ -3,6 +3,7 @@
 ```shell
 $ curl -d '{"type":"INVOICE_PAYMENT","parentTransactionUUID":null,"scheduledDate":null,"completedDate":"2018-06-20","amountInCents":23000,"gstInCents":0,"evidenceLink":null}' -H "Content-Type: application/json" -X POST http://localhost:8080/api/business/transactions
 $ curl -sS 'http://localhost:8080/api/business/transactions?period=2018-06'
+$ curl -sS 'http://localhost:8080/api/business/transactions/93e6f203-d516-4e45-ac6c-2777d3a66d56'
 ```
 
 ## build

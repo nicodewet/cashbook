@@ -35,4 +35,10 @@ class BusinessTransactionDataProvider: AddBusinessTransactionInRepository, Fetch
 
     }
 
+    override fun fetchBusinessTransactionFromRepository(uuid: String): BusinessTransaction? {
+
+        return transactions[uuid]
+
+    }
+
 }

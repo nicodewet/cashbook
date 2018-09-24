@@ -52,6 +52,35 @@ class FetchBusinessTransactionApiTests(@Autowired val mockMvc: MockMvc) {
     }
 
     @Test
+    fun `fetch business transaction by uuid - expected value returned`() {
+
+        // Arrange
+        val completedDate = LocalDate.now()
+        val businessTransaction = BusinessTransaction(completedDate = completedDate,
+                scheduledDate = null,
+                type = BusinessTransactionType.INVOICE_PAYMENT,
+                amountInCents = 100,
+                gstInCents = 15)
+
+        whenever(fetchBusinessTransactionsUseCase.fetchBusinessTransaction(any())).thenReturn(businessTransaction)
+        whenever(company.getCompany()).thenReturn(companyProvider.getCompany())
+
+        // Act and Assert
+        val uuidThatIsNotSignificantInThisTestCase = "876869876"
+        mockMvc.perform(MockMvcRequestBuilders.get(
+                BusinessTransactionApiEndpoint.BUSINESS_TRANSACTION_END_POINT_URL + "/"
+                        + uuidThatIsNotSignificantInThisTestCase)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk)
+                .andExpect(MockMvcResultMatchers.jsonPath("$.uuid", Matchers.equalTo(businessTransaction.uuid) ))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.createdTimestamp", Matchers.not(Matchers.isEmptyOrNullString()) ))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.lastUpdateTimestamp", Matchers.not(Matchers.isEmptyOrNullString()) ))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.type", Matchers.equalTo(BusinessTransactionType.INVOICE_PAYMENT.toString()) ))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.amountInCents", Matchers.equalTo(businessTransaction.amountInCents) ))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.gstInCents", Matchers.equalTo(businessTransaction.gstInCents) ))
+    }
+
+    @Test
     fun `fetch business transactions by year and month - expected list returned`() {
 
         // Arrange

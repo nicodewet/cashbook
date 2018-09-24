@@ -17,8 +17,6 @@ import java.time.format.DateTimeParseException
 import javax.validation.Valid
 import javax.validation.constraints.Pattern
 
-
-
 @RestController
 @Validated
 @RequestMapping(BUSINESS_TRANSACTION_END_POINT_URL)
@@ -26,7 +24,7 @@ class BusinessTransactionApiEndpoint(private val addBusinessTransactionUseCase: 
                                      private val fetchBusinessTransactionsUseCase: FetchBusinessTransactionsUseCase) {
 
     companion object {
-        const val BUSINESS_TRANSACTION_END_POINT_URL: String = "/api/business/transactions"
+        const val BUSINESS_TRANSACTION_END_POINT_URL: String = "/api/business/transactions/**"
         const val PERIOD_REQ_PARAM_NAME: String = "period"
         const val PERIOD_REQ_PARAM_VALIDATION_ERROR_MESSAGE_POSTFIX = "must match yyyy-dd"
     }
@@ -55,6 +53,46 @@ class BusinessTransactionApiEndpoint(private val addBusinessTransactionUseCase: 
 
         } catch (e: BusinessTransactionException) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AddBusinessTransactionResponse(null,e.message))
+        }
+
+    }
+
+    fun toBusinessTransactionDTO(transaction: BusinessTransaction): BusinessTransactionDTO {
+        val childTransactionUuids = mutableListOf<String>()
+        if (transaction.childTransactions != null && transaction.childTransactions.isNotEmpty()) {
+            for (childTransaction in transaction.childTransactions) {
+                childTransactionUuids.add(childTransaction.uuid)
+            }
+        }
+
+        val transactionDTO: BusinessTransactionDTO = BusinessTransactionDTO(
+                uuid = transaction.uuid,
+                createdTimestamp = transaction.createdTimestamp,
+                lastUpdateTimestamp = transaction.lastUpdateTimestamp,
+                scheduledDate = transaction.scheduledDate,
+                completedDate = transaction.completedDate,
+                type = transaction.type.toString(),
+                amountInCents = transaction.amountInCents,
+                gstInCents = transaction.gstInCents,
+                parentTransactionUuid = transaction.parentTransaction?.uuid,
+                childTransactionUuids = childTransactionUuids,
+                evidenceLink = transaction.evidenceLink,
+                businessTransactionIssue = transaction.businessTransactionIssue?.toString(),
+                businessTransactionIssueDetail = transaction.businessTransactionIssueDetail
+        )
+        return transactionDTO
+    }
+
+    @RequestMapping(value = ["**/{uuid}"],
+                    method = [RequestMethod.GET])
+    fun getBusinessTransaction(@PathVariable("uuid") uuid: String): ResponseEntity<BusinessTransactionDTO> {
+        val transaction: BusinessTransaction? = fetchBusinessTransactionsUseCase.fetchBusinessTransaction(uuid)
+
+        return if (transaction != null) {
+            val transactionDTO = toBusinessTransactionDTO(transaction)
+            ResponseEntity.ok(transactionDTO)
+        } else {
+            ResponseEntity.notFound().build()
         }
 
     }
@@ -89,30 +127,7 @@ class BusinessTransactionApiEndpoint(private val addBusinessTransactionUseCase: 
 
             for (transaction in transactions) {
 
-                val childTransactionUuids = mutableListOf<String>()
-                if (transaction.childTransactions != null && transaction.childTransactions.isNotEmpty()) {
-                    for (childTransaction in transaction.childTransactions) {
-                        childTransactionUuids.add(childTransaction.uuid)
-                    }
-                }
-
-                val transactionDTO: BusinessTransactionDTO = BusinessTransactionDTO(
-                        uuid = transaction.uuid,
-                        createdTimestamp = transaction.createdTimestamp,
-                        lastUpdateTimestamp = transaction.lastUpdateTimestamp,
-                        scheduledDate = transaction.scheduledDate,
-                        completedDate = transaction.completedDate,
-                        type = transaction.type.toString(),
-                        amountInCents = transaction.amountInCents,
-                        gstInCents = transaction.gstInCents,
-                        parentTransactionUuid = transaction.parentTransaction?.uuid,
-                        childTransactionUuids = childTransactionUuids,
-                        evidenceLink = transaction.evidenceLink,
-                        businessTransactionIssue = transaction.businessTransactionIssue?.toString(),
-                        businessTransactionIssueDetail = transaction.businessTransactionIssueDetail
-
-
-                )
+                val transactionDTO = toBusinessTransactionDTO(transaction)
                 transactionsResponse.add(transactionDTO)
             }
 
