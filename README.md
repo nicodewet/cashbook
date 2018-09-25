@@ -21,9 +21,11 @@ $ ./gradlew build
 
 ## code quality
 
-This project uses SonarQube which introduced support for Kotlin in version 7.3 onwards.
+This project uses [SonarQube](https://sonarqube.org/) which 
+[introduced support for Kotlin in version 7.3](https://www.sonarqube.org/sonarqube-7-3/) 
+onwards.
 
-If you want to experiment on your local here is an example of the command you'll need to run:
+If you want to experiment on your local here is an example of the command you'll need to run (change the login token):
 
 ```shell
  ./gradlew sonarqube -Dsonar.host.url=http://localhost:9000 -Dsonar.login=4182970e4cc7160a223196b1b56939029cca4816

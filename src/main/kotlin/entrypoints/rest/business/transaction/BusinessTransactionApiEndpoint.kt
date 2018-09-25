@@ -2,7 +2,7 @@ package com.thorgil.cashbook.entrypoints.rest.business.transaction
 
 import com.thorgil.cashbook.core.entity.BusinessTransaction
 import com.thorgil.cashbook.core.usecase.business.transaction.AddBusinessTransactionMessage
-import com.thorgil.cashbook.core.usecase.business.transaction.AddBusinessTransactionUseCase
+import com.thorgil.cashbook.core.usecase.business.transaction.AddParentBusinessTransactionUseCase
 import com.thorgil.cashbook.core.usecase.business.transaction.BusinessTransactionException
 import com.thorgil.cashbook.core.usecase.business.transaction.FetchBusinessTransactionsUseCase
 import com.thorgil.cashbook.entrypoints.rest.business.transaction.BusinessTransactionApiEndpoint.Companion.BUSINESS_TRANSACTION_END_POINT_URL
@@ -20,7 +20,7 @@ import javax.validation.constraints.Pattern
 @RestController
 @Validated
 @RequestMapping(BUSINESS_TRANSACTION_END_POINT_URL)
-class BusinessTransactionApiEndpoint(private val addBusinessTransactionUseCase: AddBusinessTransactionUseCase,
+class BusinessTransactionApiEndpoint(private val addBusinessTransactionUseCase: AddParentBusinessTransactionUseCase,
                                      private val fetchBusinessTransactionsUseCase: FetchBusinessTransactionsUseCase) {
 
     companion object {
@@ -47,7 +47,7 @@ class BusinessTransactionApiEndpoint(private val addBusinessTransactionUseCase: 
                     evidenceLink = businessTransactionPostBody.evidenceLink
             )
 
-            val addedBusinessTransaction =  addBusinessTransactionUseCase.addBusinessTransaction(addBusinessTransactionMessage)
+            val addedBusinessTransaction =  addBusinessTransactionUseCase.addParentBusinessTransaction(addBusinessTransactionMessage)
 
             return ResponseEntity.ok(AddBusinessTransactionResponse(addedBusinessTransaction.uuid,null))
 

@@ -3,7 +3,7 @@ package com.thorgil.cashbook.core.usecase.company.business.transaction
 import com.thorgil.cashbook.core.entity.*
 import com.thorgil.cashbook.core.usecase.business.transaction.AddBusinessTransactionInRepository
 import com.thorgil.cashbook.core.usecase.business.transaction.AddBusinessTransactionMessage
-import com.thorgil.cashbook.core.usecase.business.transaction.AddBusinessTransactionUseCase
+import com.thorgil.cashbook.core.usecase.business.transaction.AddParentBusinessTransactionUseCase
 import com.thorgil.cashbook.core.usecase.business.transaction.BusinessTransactionException
 import com.thorgil.cashbook.core.usecase.company.GetCompany
 import org.assertj.core.api.Assertions.assertThat
@@ -15,11 +15,11 @@ import org.slf4j.LoggerFactory
 import java.time.LocalDate
 import java.time.Month
 
-class AddBusinessTransactionUseCaseTest {
+class AddParentBusinessTransactionUseCaseTest {
 
     companion object {
 
-        private val LOGGER = LoggerFactory.getLogger(AddBusinessTransactionUseCaseTest::class.java)
+        private val LOGGER = LoggerFactory.getLogger(AddParentBusinessTransactionUseCaseTest::class.java)
 
         private  val companyProvider: GetCompany = object: GetCompany {
             override fun getCompany(): Company {
@@ -63,11 +63,11 @@ class AddBusinessTransactionUseCaseTest {
                 gstInCents = 0
         )
 
-        val sut = AddBusinessTransactionUseCase(companyProvider, addBusinessTransactionInRepo)
+        val sut = AddParentBusinessTransactionUseCase(companyProvider, addBusinessTransactionInRepo)
 
         // === Act ===
 
-        val businessTransaction: BusinessTransaction = sut.addBusinessTransaction(addBusinessTransaction)
+        val businessTransaction: BusinessTransaction = sut.addParentBusinessTransaction(addBusinessTransaction)
 
         // === Assert ===
         assertThat(businessTransaction.amountInCents).isEqualTo(2000)
@@ -99,11 +99,11 @@ class AddBusinessTransactionUseCaseTest {
                 gstInCents = 300
         )
 
-        val sut = AddBusinessTransactionUseCase(companyProvider, addBusinessTransactionInRepo)
+        val sut = AddParentBusinessTransactionUseCase(companyProvider, addBusinessTransactionInRepo)
 
         // === Act ===
 
-        val businessTransaction: BusinessTransaction = sut.addBusinessTransaction(addBusinessTransaction)
+        val businessTransaction: BusinessTransaction = sut.addParentBusinessTransaction(addBusinessTransaction)
 
         // === Assert ===
 
@@ -124,11 +124,11 @@ class AddBusinessTransactionUseCaseTest {
                 gstInCents = 3
         )
 
-        val sut = AddBusinessTransactionUseCase(companyProvider, addBusinessTransactionInRepo)
+        val sut = AddParentBusinessTransactionUseCase(companyProvider, addBusinessTransactionInRepo)
 
         // === Act ===
 
-        val businessTransaction: BusinessTransaction = sut.addBusinessTransaction(addBusinessTransWithIncorrectGST)
+        val businessTransaction: BusinessTransaction = sut.addParentBusinessTransaction(addBusinessTransWithIncorrectGST)
 
         // === Assert ===
 
@@ -149,11 +149,11 @@ class AddBusinessTransactionUseCaseTest {
                 amountInCents = 2000,
                 gstInCents = 300
         )
-        val sut = AddBusinessTransactionUseCase(companyProvider, addBusinessTransactionInRepo)
+        val sut = AddParentBusinessTransactionUseCase(companyProvider, addBusinessTransactionInRepo)
 
         // === Act & Assert ===
         Assertions.assertThrows(BusinessTransactionException::class.java) {
-            sut.addBusinessTransaction(addBusinessTransWithIncorrectSchedDate)
+            sut.addParentBusinessTransaction(addBusinessTransWithIncorrectSchedDate)
         }
 
     }
@@ -168,11 +168,11 @@ class AddBusinessTransactionUseCaseTest {
                 amountInCents = -2
         )
 
-        val sut = AddBusinessTransactionUseCase(companyProvider, addBusinessTransactionInRepo)
+        val sut = AddParentBusinessTransactionUseCase(companyProvider, addBusinessTransactionInRepo)
 
         // === Act & Assert ===
         Assertions.assertThrows(BusinessTransactionException::class.java) {
-            sut.addBusinessTransaction(addBusinessTransaction)
+            sut.addParentBusinessTransaction(addBusinessTransaction)
         }
     }
 
@@ -187,11 +187,11 @@ class AddBusinessTransactionUseCaseTest {
                 gstInCents = -1
         )
 
-        val sut = AddBusinessTransactionUseCase(companyProvider, addBusinessTransactionInRepo)
+        val sut = AddParentBusinessTransactionUseCase(companyProvider, addBusinessTransactionInRepo)
 
         // === Act & Assert ===
         Assertions.assertThrows(BusinessTransactionException::class.java) {
-            sut.addBusinessTransaction(addBusinessTransaction)
+            sut.addParentBusinessTransaction(addBusinessTransaction)
         }
     }
 
@@ -208,10 +208,10 @@ class AddBusinessTransactionUseCaseTest {
                 scheduledDate = yesterday
         )
 
-        val sut = AddBusinessTransactionUseCase(companyProvider, addBusinessTransactionInRepo)
+        val sut = AddParentBusinessTransactionUseCase(companyProvider, addBusinessTransactionInRepo)
 
         Assertions.assertThrows(BusinessTransactionException::class.java) {
-            sut.addBusinessTransaction(addBusinessTransaction)
+            sut.addParentBusinessTransaction(addBusinessTransaction)
         }
     }
 
@@ -228,11 +228,11 @@ class AddBusinessTransactionUseCaseTest {
                 scheduledDate = thirtyDaysFromNow
         )
 
-        val sut = AddBusinessTransactionUseCase(companyProvider, addBusinessTransactionInRepo)
+        val sut = AddParentBusinessTransactionUseCase(companyProvider, addBusinessTransactionInRepo)
 
         // === Act ===
 
-        val businessTransaction: BusinessTransaction = sut.addBusinessTransaction(addBusinessTransaction)
+        val businessTransaction: BusinessTransaction = sut.addParentBusinessTransaction(addBusinessTransaction)
 
         // === Assert ===
 
