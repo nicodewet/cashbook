@@ -20,3 +20,7 @@
 ## REST
 
 * [Richardson Maturity Model - steps toward the glory of REST](https://martinfowler.com/articles/richardsonMaturityModel.html)
+
+## Clean Architecture
+
+* [A Guided Tour inside a clean architecture code base.](https://proandroiddev.com/a-guided-tour-inside-a-clean-architecture-code-base-48bb5cc9fc97)
